@@ -1,0 +1,126 @@
+{
+    "Woodpecker Electro": {
+        "2-piece": {
+            "stat": "CRIT Rate",
+            "value": 0.08
+        },
+        "4-piece": {
+            "description": "Landing a critical hit on an enemy with a Basic Attack, Dodge Counter, or EX Special Attack increases the equipper's ATK by {atk}% for {duration}s. The buff duration for different skills are calculated separately.",
+            "values": {
+                "atk": 9,
+                "duration": 6
+            }
+        }
+    },
+    "Puffer Electro": {
+        "2-piece": {
+            "stat": "PEN Ratio",
+            "value": 0.08
+        },
+        "4-piece": {
+            "description": "Ultimate DMG increases by {ult_dmg}%. Launching an Ultimate increases the equipper's ATK by {atk}% for {duration}s.",
+            "values": {
+                "ult_dmg": 20,
+                "atk": 15,
+                "duration": 12
+            }
+        }
+    },
+    "Hormone Punk": {
+        "2-piece": {
+            "stat": "ATK",
+            "value": 0.1
+        },
+        "4-piece": {
+            "description": "Upon entering combat or switching in, its user's ATK increases by {atk}% for {duration}s. This effect can trigger once every {delay}s.",
+            "values": {
+                "atk": 25,
+                "duration": 10,
+                "delay": 20
+            }
+        }
+    },
+    "Swing Jazz": {
+        "2-piece": {
+            "stat": "Energy Regen",
+            "value": 0.2
+        },
+        "4-piece": {
+            "description": "Launching a Chain Attack or Ultimate increases all squad members' DMG by {dmg}% for {duration}s. Passive effects of the same name do not stack.",
+            "values": {
+                "dmg": 15,
+                "duration": 12
+            }
+        }
+    },
+    "Proto Punk": {
+        "2-piece": {
+            "stat": "Shield Effect",
+            "value": 0.15
+        },
+        "4-piece": {
+            "description": "When any squad member triggers a Defensive Assist or Evasive Assist, all squad members deal {dmg}% increased DMG, lasting {duration}s. Passive effects of the same name do not stack.",
+            "values": {
+                "dmg": 15,
+                "duration": 10
+            }
+        }
+    },
+    "Polar Metal": {
+        "2-piece": {
+            "stat": "Ice DMG",
+            "value": 0.1
+        },
+        "4-piece": {
+            "description": "Increase the DMG of Basic Attack and Dash Attack by {basic_dash_dmg}%. When any squad member inflicts Freeze or Shatter, this effect increases by an additional {basic_dash_dmg}% for {duration}s.",
+            "values": {
+                "basic_dash_dmg": 20,
+                "duration": 12
+            }
+        }
+    },
+    "Astral Voice": {
+        "2-piece": {
+            "stat": "ATK",
+            "value": 0.1
+        },
+        "4-piece": {
+            "description": "Whenever any squad member enters the field using a Quick Assist, all squad members gain 1 stack of Astral, up to a maximum of {max_stacks} stacks, and lasting {duration}s. Repeated triggers reset the duration. Each stack of Astral increases the DMG dealt by the character entering the field using a Quick Assist by {dmg}%. Only one instance of this effect can exist in the same squad.",
+            "values": {
+                "max_stacks": 3,
+                "duration": 15,
+                "dmg": 8
+            }
+        }
+    },
+    "Shadow Harmony": {
+        "2-piece": {
+            "stat": "Aftershock&Dash DMG",
+            "value": 0.15
+        },
+        "4-piece": {
+            "description": "Upon hitting an enemy with an Aftershock or Dash Attack, if the DMG dealt aligns with the equipper's attribute, the equipper gains 1 stack of a buff effect, at most once per use of a skill. For each stack, the equipper's ATK increases by {atk}%, and CRIT Rate increases by {crit_rate}%. The effect can stack up to {max_stacks} times and lasts for {duration}s. Repeated triggers reset the duration.",
+            "values": {
+                "atk": 4,
+                "crit_rate": 4,
+                "max_stacks": 3,
+                "duration": 15
+            }
+        }
+    },
+    "Branch & Blade Song": {
+        "2-piece": {
+            "stat": "CRIT DMG",
+            "value": 0.16
+        },
+        "4-piece": {
+            "description": "When Anomaly Mastery exceeds or equals {anomaly_mastery_req} points, the equipper's CRIT DMG increases by {crit_dmg}%. When any squad member applies Freeze or triggers the Shatter effect on an enemy, the equipper's CRIT Rate increases by {crit_rate}%, lasting {duration}s.",
+            "values": {
+                "anomaly_mastery_req": 115,
+                "crit_dmg": 430,
+                "crit_rate": 12,
+                "duration": 15
+            }
+        }
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "Ellen": {
+        "attribute": "Ice",
+        "specialty": "Attack",
+        "faction": "Victoria Housekeeping Co.",
+        "type": ["Slash"],
+        "rarity": "S",
+        "info": {
+            "full_name": "Ellen Joe",
+            "gender": "Female",
+            "height": "161",
+            "brithday": "January 4"
+        },
+        "base_stats": {
+            "base_hp": 7673,
+            "base_atk": 938,
+            "base_def": 606,
+            "base_impact": 93,
+            "base_anomaly_mastery": 94,
+            "base_anomaly_proficiency": 93
+        },
+        "core_stat": {
+            "stat": "CRIT Rate",
+            "value": 0.144
+        }
+    }
+}

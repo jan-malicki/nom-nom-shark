@@ -1,0 +1,206 @@
+{
+    "Steel Cushion": {
+        "specialty": "attack",
+        "rarity": "S",
+        "base_atk": "684",
+        "sub_stat": {
+            "stat": "CRIT Rate",
+            "value": 0.24
+        },
+        "passive": {
+            "name": "Metal Cat Claws",
+            "description": "Increases Physical DMG by {physical_dmg}%. The equipper's DMG increases by {back_dmg}% when hitting the enemy from behind.",
+            "values": {
+                "phase_1": {"physical_dmg": 20, "back_dmg": 25},
+                "phase_2": {"physical_dmg": 25, "back_dmg": 31.5},
+                "phase_3": {"physical_dmg": 30, "back_dmg": 38},
+                "phase_4": {"physical_dmg": 35, "back_dmg": 44},
+                "phase_5": {"physical_dmg": 40, "back_dmg": 50}
+            }
+        }
+    },
+    "The Brimstone": {
+        "specialty": "attack",
+        "rarity": "S",
+        "base_atk": "684",
+        "sub_stat": {
+            "stat": "ATK",
+            "value": 0.3
+        },
+        "passive": {
+            "name": "Scorching Breath",
+            "description": "Upon hitting an enemy with a Basic Attack, Dash Attack, or Dodge Counter, the equipper's ATK increases by {atk}% for 8s, stacking up to 8 times. This effect can trigger once every 0.5s. The duration of each stack is calculated separately.",
+            "values": {
+                "phase_1": {"atk": 3.5},
+                "phase_2": {"atk": 4.4},
+                "phase_3": {"atk": 5.2},
+                "phase_4": {"atk": 6},
+                "phase_5": {"atk": 7}
+            }
+        }
+    },
+    "Deep Sea Visitor": {
+        "specialty": "attack",
+        "rarity": "S",
+        "base_atk": "713",
+        "sub_stat": {
+            "stat": "CRIT Rate",
+            "value": 0.24
+        },
+        "passive": {
+            "name": "Lord of Seas",
+            "description": "Increases Ice DMG by {ice_dmg}%. Upon hitting an enemy with a Basic Attack, the equipper`s CRIT Rate increases by {crit_rate}% for 8s. When dealing Ice DMG with a Dash Attack, the equipper`s CRIT Rate increases by an additional {crit_rate}% for 15s. The duration of each effect is calculated separately.",
+            "values": {
+                "phase_1": {"ice_dmg": 25, "crit_rate": 10},
+                "phase_2": {"ice_dmg": 31.5, "crit_rate": 12.5},
+                "phase_3": {"ice_dmg": 38, "crit_rate": 15},
+                "phase_4": {"ice_dmg": 44.5, "crit_rate": 17.5},
+                "phase_5": {"ice_dmg": 50, "crit_rate": 20}
+            }
+        }
+    },
+    "Zanshin Herb Case": {
+        "specialty": "attack",
+        "rarity": "S",
+        "base_atk": "713",
+        "sub_stat": {
+            "stat": "CRIT DMG",
+            "value": 0.48
+        },
+        "passive": {
+            "name": "Growth Through Adversity",
+            "description": "CRIT Rate increases by {crit_rate}%. Dash Attack Electric DMG increases by {dash_electric_dmg}%. When any squad member applies an Attribute Anomaly or Stuns an enemy, the equipper's CRIT Rate increases by an additional {crit_rate}% for 15s.",
+            "values": {
+                "phase_1": {"crit_rate": 10, "dash_electric_dmg": 40},
+                "phase_2": {"crit_rate": 11.5, "dash_electric_dmg": 46},
+                "phase_3": {"crit_rate": 13, "dash_electric_dmg": 52},
+                "phase_4": {"crit_rate": 14.5, "dash_electric_dmg": 58},
+                "phase_5": {"crit_rate": 16, "dash_electric_dmg": 64}
+            }
+        }
+    },
+    "Riot Suppressor Mark VI": {
+        "specialty": "attack",
+        "rarity": "S",
+        "base_atk": "713",
+        "sub_stat": {
+            "stat": "CRIT DMG",
+            "value": 0.48
+        },
+        "passive": {
+            "name": "Security Patrol",
+            "description": "Increases CRIT Rate by {crit_rate}%. Launching an EX Special Attack grants the equipper 8 Charge stacks, up to a maximum of 8 stacks. Whenever the equipper's Basic Attack deals Ether DMG, consumes a Charge stack and increases the skill's DMG by {basic_ether_dmg}%.",
+            "values": {
+                "phase_1": {"crit_rate": 15, "basic_ether_dmg": 35},
+                "phase_2": {"crit_rate": 18.8, "basic_ether_dmg": 43.5},
+                "phase_3": {"crit_rate": 22.6, "basic_ether_dmg": 52},
+                "phase_4": {"crit_rate": 26.4, "basic_ether_dmg": 60.5},
+                "phase_5": {"crit_rate": 30, "basic_ether_dmg": 70}
+            }
+        }
+    },
+    "Myriad Eclipse": {
+        "specialty": "attack",
+        "rarity": "S",
+        "base_atk": "713",
+        "sub_stat": {
+            "stat": "CRIT Rate",
+            "value": 0.24
+        },
+        "passive": {
+            "name": "False Personas",
+            "description": "CRIT DMG increases by {crit_dmg}%. When using an EX Special Attack, Chain Attack, or Ultimate to deal Ice DMG, the equipper gains the Absolute Zero Death Sentence effect for 3s. While Absolute Zero Death Sentence is active, the character ignores {def_ignore}% of the enemy's DEF when landing a hit.",
+            "values": {
+                "phase_1": {"crit_dmg": 45, "def_ignore": 25},
+                "phase_2": {"crit_dmg": 51.75, "def_ignore": 28.75},
+                "phase_3": {"crit_dmg": 58.5, "def_ignore": 32.5},
+                "phase_4": {"crit_dmg": 65.25, "def_ignore": 36.25},
+                "phase_5": {"crit_dmg": 72, "def_ignore": 40}
+            }
+        }
+    },
+    "Heartstring Nocturne": {
+        "specialty": "attack",
+        "rarity": "S",
+        "base_atk": "713",
+        "sub_stat": {
+            "stat": "CRIT Rate",
+            "value": 0.24
+        },
+        "passive": {
+            "name": "String & Melody",
+            "description": "CRIT DMG increases by {crit_dmg}%. When the equipper enters combat, or activates a Chain Attack or Ultimate, they gain 1 stack of Heartstring. Each stack of Heartstring allows the equipper's Chain Attack and Ultimate to ignore {fir_res_ignore}% of the target's Fire RES, stacking up to 2 times and lasting 30s. Repeated triggers reset the duration.",
+            "values": {
+                "phase_1": {"crit_dmg": 50, "fire_res_ignore": 12.5},
+                "phase_2": {"crit_dmg": 57.5, "fire_res_ignore": 14.5},
+                "phase_3": {"crit_dmg": 65, "fire_res_ignore": 16.5},
+                "phase_4": {"crit_dmg": 72.5, "fire_res_ignore": 18.5},
+                "phase_5": {"crit_dmg": 80, "fire_res_ignore": 20}
+            }
+        }
+    },
+    "Severed Innocence": {
+        "specialty": "attack",
+        "rarity": "S",
+        "base_atk": "713",
+        "sub_stat": {
+            "stat": "CRIT DMG",
+            "value": 0.48
+        },
+        "passive": {
+            "name": "Tranquil Blossom",
+            "description": "CRIT DMG is increased by {crit_dmg}%. When the equipper lands a hit with a Basic Attack, Special Attack, or Aftershock, they gain 1 stack of a buff. Each stack increases the equipper's CRIT DMG by an additional {stack_crit_dmg}%, stacking up to 3 times. The effect lasts for 30s, with each stack's duration calculated separately, and can only be triggered once per use of a skill. With all 3 stacks, the equipper's Electric DMG increases by {electric_dmg}%.",
+            "values": {
+                "phase_1": {"crit_dmg": 30, "stack_crit_dmg": 10, "electric_dmg": 20},
+                "phase_2": {"crit_dmg": 34.5, "stack_crit_dmg": 11.5, "electric_dmg": 23},
+                "phase_3": {"crit_dmg": 39, "stack_crit_dmg": 13, "electric_dmg": 26},
+                "phase_4": {"crit_dmg": 43.5, "stack_crit_dmg": 14.5, "electric_dmg": 29},
+                "phase_5": {"crit_dmg": 48, "stack_crit_dmg": 16, "electric_dmg": 32}
+            }
+        }
+    },
+    "Street Superstar": {
+        "specialty": "attack",
+        "rarity": "A"
+    },
+    "Starlight Engine": {
+        "specialty": "attack",
+        "rarity": "A"
+    },
+    "Gilded Blossom": {
+        "specialty": "attack",
+        "rarity": "A"
+    },
+    "Marcato Desire": {
+        "specialty": "attack",
+        "rarity": "A"
+    },
+    "Housekeeper": {
+        "specialty": "attack",
+        "rarity": "A"
+    },
+    "Starlight Engine Replica": {
+        "specialty": "attack",
+        "rarity": "A"
+    },
+    "Drill Rig - Red Axis": {
+        "specialty": "attack",
+        "rarity": "A"
+    },
+    "Cannon Rotor": {
+        "specialty": "attack",
+        "rarity": "A"
+    },
+    "[Lunar] Pleniluna": {
+        "specialty": "attack",
+        "rarity": "B"
+    },
+    "[Lunar] Decrescent": {
+        "specialty": "attack",
+        "rarity": "B"
+    },
+    "[Lunar] Noviluna": {
+        "specialty": "attack",
+        "rarity": "B"
+    }
+}

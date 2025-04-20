@@ -1,0 +1,678 @@
+{
+    "Core Skill": {
+        "Core Passive: Sharp-Toothed": {
+            "description": "When Ellen launches a Charged Scissors Strike during Dash Attack: Arctic Ambush, or consumes a Flash Freeze Charge to activate Basic Attack: Flash Freeze Trimming, the skill's CRIT DMG is increased by {crit_dmg}%.",
+            "values": {
+                "0": {
+                    "crit_dmg": 50
+                },
+                "A": {
+                    "crit_dmg": 58.3
+                },
+                "B": {
+                    "crit_dmg": 66.6
+                },
+                "C": {
+                    "crit_dmg": 75
+                },
+                "D": {
+                    "crit_dmg": 83.3
+                },
+                "E": {
+                    "crit_dmg": 91.6
+                },
+                "F": {
+                    "crit_dmg": 100
+                }
+            }
+        },
+        "Additional Ability: Rising Storm": {
+            "condition": "When another character in your squad shares the same Attribute or Faction:",
+            "description": "When Ellen deals Ice DMG, subsequent Ice DMG increases by {ice_dmg}% for {duration}s. This effect can stack up to {max_stacks} times, and repeated triggers reset the duration.",
+            "values": {
+                "ice_dmg": 3,
+                "duration": 10,
+                "max_stacks": 10
+            }
+        }
+    },
+    "Skills": {
+        "Basic Attack: Saw Teeth Trimming": {
+            "description": "Press Basic Attack to activate. Unleash up to 3 attacks, dealing Physical DMG. Press repeatedly or hold Basic Attack during the 3rd attack to extend the skill duration.",
+            "1st-Hit Multiplier": {
+                "dmg_tags": [
+                    "Basic Attack"
+                ],
+                "skill_type": "Basic Attack",
+                "attribute": "Physical",
+                "dmg_scaling": {
+                    "step": 0.045,
+                    "1": 0.488,
+                    "16": 1.163
+                },
+                "daze_scaling": {
+                    "step": 0.012,
+                    "1": 0.244,
+                    "16": 0.424
+                },
+                "energy_gain": 0.679,
+                "decibel_gain": 6.105,
+                "anomaly_buildup": 0,
+                "hit_count": 2,
+                "damage_spread": [
+                    0.5,
+                    0.5
+                ]
+            },
+            "2nd-Hit Multiplier": {
+                "dmg_tags": [
+                    "Basic Attack"
+                ],
+                "skill_type": "Basic Attack",
+                "attribute": "Physical",
+                "dmg_scaling": {
+                    "step": 0.101,
+                    "1": 1.111,
+                    "16": 2.626
+                },
+                "daze_scaling": {
+                    "step": 0.04,
+                    "1": 0.868,
+                    "16": 1.468
+                },
+                "energy_gain": 2.415,
+                "decibel_gain": 21.6975,
+                "anomaly_buildup": 0,
+                "hit_count": 4,
+                "damage_spread": [
+                    0.15,
+                    0.15,
+                    0.35,
+                    0.35
+                ]
+            },
+            "3rd-Hit Multiplier": {
+                "dmg_tags": [
+                    "Basic Attack"
+                ],
+                "skill_type": "Basic Attack",
+                "attribute": "Physical",
+                "dmg_scaling": {
+                    "step": 0.271,
+                    "1": 2.973,
+                    "16": 7.038
+                },
+                "daze_scaling": {
+                    "step": 0.11,
+                    "1": 2.404,
+                    "16": 4.054
+                },
+                "energy_gain": 6.688,
+                "decibel_gain": 60.115,
+                "anomaly_buildup": 0,
+                "hit_count": 11,
+                "damage_spread": [
+                    0.1,
+                    0.1,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.2
+                ]
+            }
+        },
+        "Basic Attack: Flash Freeze Trimming": {
+            "description": "While Flash Freeze is active, press Basic Attack to activate: Launch up to 3 attacks at enemies in front, dealing Ice DMG. Each attack consumes 1 Flash Freeze Charge. Press repeatedly or hold Basic Attack during the 3rd attack to extend the skill duration.",
+            "1st-Hit Multiplier": {
+                "dmg_tags": [
+                    "Basic Attack"
+                ],
+                "skill_type": "Basic Attack",
+                "attribute": "Ice",
+                "dmg_scaling": {
+                    "step": 0.091,
+                    "1": 0.996,
+                    "16": 2.361
+                },
+                "daze_scaling": {
+                    "step": 0.023,
+                    "1": 0.488,
+                    "16": 0.833
+                },
+                "energy_gain": 1.358,
+                "decibel_gain": 12.21,
+                "anomaly_buildup": 44.35,
+                "hit_count": 2,
+                "damage_spread": [
+                    0.5,
+                    0.5
+                ]
+            },
+            "2nd-Hit Multiplier": {
+                "dmg_tags": [
+                    "Basic Attack"
+                ],
+                "skill_type": "Basic Attack",
+                "attribute": "Ice",
+                "dmg_scaling": {
+                    "step": 0.168,
+                    "1": 1.84,
+                    "16": 4.36
+                },
+                "daze_scaling": {
+                    "step": 0.041,
+                    "1": 0.902,
+                    "16": 1.517
+                },
+                "energy_gain": 2.509,
+                "decibel_gain": 22.55,
+                "anomaly_buildup": 81.99,
+                "hit_count": 4,
+                "damage_spread": [
+                    0.15,
+                    0.15,
+                    0.35,
+                    0.35
+                ]
+            },
+            "3rd-Hit Multiplier": {
+                "dmg_tags": [
+                    "Basic Attack"
+                ],
+                "skill_type": "Basic Attack",
+                "attribute": "Ice",
+                "dmg_scaling": {
+                    "step": 0.452,
+                    "1": 4.962,
+                    "16": 11.742
+                },
+                "daze_scaling": {
+                    "step": 0.112,
+                    "1": 2.455,
+                    "16": 4.135
+                },
+                "energy_gain": 6.428,
+                "decibel_gain": 61.38,
+                "anomaly_buildup": 223.17,
+                "hit_count": 14,
+                "damage_spread": [
+                    0.09,
+                    0.04,
+                    0.04,
+                    0.04,
+                    0.04,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.15
+                ]
+            }
+        },
+        "Dash Attack: Arctic Ambush": {
+            "Spinning Slash Multiplier": {
+                "dmg_tags": [
+                    "Dash Attack"
+                ],
+                "skill_type": "Dodge",
+                "attribute": "Ice",
+                "dmg_scaling": {
+                    "step": 0.057,
+                    "1": 0.623,
+                    "16": 1.478
+                },
+                "daze_scaling": {
+                    "step": 0.029,
+                    "1": 0.623,
+                    "16": 1.058
+                },
+                "energy_gain": 2.038,
+                "decibel_gain": 15.565,
+                "anomaly_buildup": 56.59,
+                "hit_count": 2,
+                "damage_spread": [
+                    0.5,
+                    0.5
+                ]
+            },
+            "Swift Scissors Multiplier": {
+                "dmg_tags": [
+                    "Dash Attack"
+                ],
+                "skill_type": "Dodge",
+                "attribute": "Ice",
+                "dmg_scaling": {
+                    "step": 0.116,
+                    "1": 1.276,
+                    "16": 3.016
+                },
+                "daze_scaling": {
+                    "step": 0.045,
+                    "1": 0.982,
+                    "16": 1.657
+                },
+                "energy_gain": 3.211,
+                "decibel_gain": 24.53,
+                "anomaly_buildup": 89.19,
+                "hit_count": 2,
+                "damage_spread": [
+                    0.2,
+                    0.8
+                ]
+            },
+            "Charged Scissors Multiplier": {
+                "dmg_tags": [
+                    "Dash Attack"
+                ],
+                "skill_type": "Dodge",
+                "attribute": "Ice",
+                "dmg_scaling": {
+                    "step": 0.144,
+                    "1": 1.582,
+                    "16": 3.742
+                },
+                "daze_scaling": {
+                    "step": 0.056,
+                    "1": 1.217,
+                    "16": 2.057
+                },
+                "energy_gain": 3.981,
+                "decibel_gain": 24.53,
+                "anomaly_buildup": 110.56,
+                "hit_count": 3,
+                "damage_spread": [
+                    0.1,
+                    0.1,
+                    0.8
+                ]
+            },
+            "Swift Scissors Flash Freeze Charge Obtained": 1,
+            "Charged Scissors Flash Freeze Charge Obtained": 3
+        },
+        "Dash Attack: Monstrous Wave": {
+            "Multiplier": {
+                "dmg_tags": [
+                    "Dash Attack"
+                ],
+                "skill_type": "Dodge",
+                "attribute": "Physical",
+                "dmg_scaling": {
+                    "step": 0.07,
+                    "1": 0.77,
+                    "16": 1.82
+                },
+                "daze_scaling": {
+                    "step": 0.018,
+                    "1": 0.385,
+                    "16": 0.655
+                },
+                "energy_gain": 1.26,
+                "decibel_gain": 9.625,
+                "anomaly_buildup": 0,
+                "hit_count": 2,
+                "damage_spread": [
+                    0.5,
+                    0.5
+                ]
+            }
+        },
+        "Dash Attack: Cold Snap": {
+            "Multiplier": {
+                "dmg_tags": [
+                    "Dash Attack"
+                ],
+                "skill_type": "Dodge",
+                "attribute": "Ice",
+                "dmg_scaling": {
+                    "step": 0.133,
+                    "1": 1.457,
+                    "16": 3.452
+                },
+                "daze_scaling": {
+                    "step": 0.036,
+                    "1": 0.788,
+                    "16": 1.328
+                },
+                "energy_gain": 2.579,
+                "decibel_gain": 19.7175,
+                "anomaly_buildup": 71.63,
+                "hit_count": 2,
+                "damage_spread": [
+                    0.5,
+                    0.5
+                ]
+            }
+        },
+        "Dodge Counter: Reef Rock": {
+            "Multiplier": {
+                "dmg_tags": [
+                    "Dodge Counter"
+                ],
+                "skill_type": "Dodge",
+                "attribute": "Ice",
+                "dmg_scaling": {
+                    "step": 0.139,
+                    "1": 1.526,
+                    "16": 3.611
+                },
+                "daze_scaling": {
+                    "step": 0.104,
+                    "1": 2.274,
+                    "16": 3.834
+                },
+                "energy_gain": 3.842,
+                "decibel_gain": 29.37,
+                "anomaly_buildup": 106.7,
+                "hit_count": 3,
+                "damage_spread": [
+                    0.3,
+                    0.2,
+                    0.5
+                ]
+            }
+        },
+        "Special Attack: Drift": {
+            "Multiplier": {
+                "dmg_tags": [
+                    "Special Attack"
+                ],
+                "skill_type": "Special Attack",
+                "attribute": "Ice",
+                "dmg_scaling": {
+                    "step": 0.046,
+                    "1": 0.505,
+                    "16": 1.195
+                },
+                "daze_scaling": {
+                    "step": 0.023,
+                    "1": 0.505,
+                    "16": 0.85
+                },
+                "energy_gain": 0,
+                "decibel_gain": 12.6225,
+                "anomaly_buildup": 45.84,
+                "hit_count": 3,
+                "damage_spread": [
+                    0.2,
+                    0.2,
+                    0.6
+                ]
+            }
+        },
+        "EX Special Attack: Tail Swipe": {
+            "Multiplier": {
+                "dmg_tags": [
+                    "EX Special Attack"
+                ],
+                "skill_type": "Special Attack",
+                "attribute": "Ice",
+                "dmg_scaling": {
+                    "step": 0.343,
+                    "1": 3.772,
+                    "16": 8.917
+                },
+                "daze_scaling": {
+                    "step": 0.185,
+                    "1": 4.051,
+                    "16": 6.826
+                },
+                "energy_gain": 0,
+                "decibel_gain": 140.36,
+                "anomaly_buildup": 403.73,
+                "hit_count": 8,
+                "damage_spread": [
+                    0.14,
+                    0.14,
+                    0.12,
+                    0.12,
+                    0.12,
+                    0.12,
+                    0.12,
+                    0.12
+                ],
+                "energy_cost": 40
+            }
+        },
+        "EX Special Attack: Sharknami": {
+            "Multiplier": {
+                "dmg_tags": [
+                    "EX Special Attack"
+                ],
+                "skill_type": "Special Attack",
+                "attribute": "Ice",
+                "dmg_scaling": {
+                    "step": 0.503,
+                    "1": 5.533,
+                    "16": 13.078
+                },
+                "daze_scaling": {
+                    "step": 0.169,
+                    "1": 3.717,
+                    "16": 6.252
+                },
+                "energy_gain": 0,
+                "decibel_gain": 130.7075,
+                "anomaly_buildup": 372.19,
+                "hit_count": 9,
+                "damage_spread": [
+                    0.1111,
+                    0.1111,
+                    0.1111,
+                    0.1111,
+                    0.1111,
+                    0.1111,
+                    0.1111,
+                    0.1111,
+                    0.1111
+                ],
+                "energy_cost": 40
+            }
+        },
+        "Quick Assist: Shark Sentinel": {
+            "Multiplier": {
+                "dmg_tags": [
+                    "Quick Assist"
+                ],
+                "skill_type": "Assist",
+                "attribute": "Ice",
+                "dmg_scaling": {
+                    "step": 0.111,
+                    "1": 1.211,
+                    "16": 2.876
+                },
+                "daze_scaling": {
+                    "step": 0.056,
+                    "1": 1.211,
+                    "16": 2.051
+                },
+                "energy_gain": 3.962,
+                "decibel_gain": 30.2775,
+                "anomaly_buildup": 110.03,
+                "hit_count": 3,
+                "damage_spread": [
+                    0.3,
+                    0.2,
+                    0.5
+                ]
+            }
+        },
+        "Defensive Assist: Wavefront Impact": {
+            "Light Defensive Daze Multiplier": {
+                "dmg_tags": [
+                    "Defensive Assist"
+                ],
+                "skill_type": "Assist",
+                "daze_scaling": {
+                    "step": 0.124,
+                    "1": 2.713,
+                    "16": 4.573
+                },
+                "energy_gain": 0,
+                "decibel_gain": 0,
+                "anomaly_buildup": 0,
+                "hit_count": 1,
+                "damage_spread": [
+                    1
+                ]
+            },
+            "Heavy Defensive Daze Multiplier": {
+                "dmg_tags": [
+                    "Defensive Assist"
+                ],
+                "skill_type": "Assist",
+                "daze_scaling": {
+                    "step": 0.156,
+                    "1": 3.428,
+                    "16": 5.768
+                },
+                "energy_gain": 0,
+                "decibel_gain": 0,
+                "anomaly_buildup": 0,
+                "hit_count": 1,
+                "damage_spread": [
+                    1
+                ]
+            },
+            "Chain Defensive Daze Multiplier": {
+                "dmg_tags": [
+                    "Defensive Assist"
+                ],
+                "skill_type": "Assist",
+                "daze_scaling": {
+                    "step": 0.076,
+                    "1": 1.668,
+                    "16": 2.808
+                },
+                "energy_gain": 0,
+                "decibel_gain": 0,
+                "anomaly_buildup": 0,
+                "hit_count": 1,
+                "damage_spread": [
+                    1
+                ]
+            }
+        },
+        "Assist Follow-Up: Shark Cruiser": {
+            "Multiplier": {
+                "dmg_tags": [
+                    "Assist Follow-Up"
+                ],
+                "skill_type": "Assist",
+                "attribute": "Ice",
+                "dmg_scaling": {
+                    "step": 0.399,
+                    "1": 4.379,
+                    "16": 10.364
+                },
+                "daze_scaling": {
+                    "step": 0.175,
+                    "1": 3.848,
+                    "16": 6.473
+                },
+                "energy_gain": 0,
+                "decibel_gain": 122.76,
+                "anomaly_buildup": 373.92,
+                "hit_count": 14,
+                "damage_spread": [
+                    0.09,
+                    0.04,
+                    0.04,
+                    0.04,
+                    0.04,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.075,
+                    0.15
+                ]
+            }
+        },
+        "Chain Attack: Avalanche": {
+            "Multiplier": {
+                "dmg_tags": [
+                    "Chain Attack"
+                ],
+                "skill_type": "Chain Attack",
+                "attribute": "Ice",
+                "dmg_scaling": {
+                    "step": 0.723,
+                    "1": 7.946,
+                    "16": 18.791
+                },
+                "daze_scaling": {
+                    "step": 0.162,
+                    "1": 3.557,
+                    "16": 5.987
+                },
+                "energy_gain": 0,
+                "decibel_gain": 271.81,
+                "anomaly_buildup": 522.83,
+                "hit_count": 12,
+                "damage_spread": [
+                    0.12,
+                    0.12,
+                    0.14,
+                    0.0575,
+                    0.0575,
+                    0.0575,
+                    0.0575,
+                    0.0575,
+                    0.0575,
+                    0.0575,
+                    0.0575,
+                    0.16
+                ]
+            }
+        },
+        "Ultimate: Endless Winter": {
+            "Multiplier": {
+                "dmg_tags": [
+                    "Ultimate"
+                ],
+                "skill_type": "Chain Attack",
+                "attribute": "Ice",
+                "dmg_scaling": {
+                    "step": 1.719,
+                    "1": 18.908,
+                    "16": 44.693
+                },
+                "daze_scaling": {
+                    "step": 0.085,
+                    "1": 1.852,
+                    "16": 3.127
+                },
+                "energy_gain": 0,
+                "decibel_gain": 0,
+                "anomaly_buildup": 168.33,
+                "hit_count": 12,
+                "damage_spread": [
+                    0.2,
+                    0.06,
+                    0.06,
+                    0.06,
+                    0.06,
+                    0.06,
+                    0.06,
+                    0.06,
+                    0.06,
+                    0.06,
+                    0.06,
+                    0.2
+                ]
+            }
+        }
+    }
+}
