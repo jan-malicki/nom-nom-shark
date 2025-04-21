@@ -149,7 +149,7 @@ class WEngineData:
 
         return cls(
             name=name,
-            specialty=Specialty.from_string(data.get("specialty")),
+            specialty=Specialty.from_string(data.get("specialty", "")),
             rarity=Rarity.from_string(data.get("rarity", "")),
             base_atk=base_atk_val,
             # Parse nested objects using their respective from_dict methods
