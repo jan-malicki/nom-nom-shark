@@ -5,6 +5,7 @@ from typing import Dict, Any, Optional, List
 
 from django.conf import settings
 
+from flashfreeze.core.agent_data import AgentData
 from flashfreeze.core.skill_data import AgentSkillData
 
 BASE_DIR = settings.BASE_DIR
@@ -94,6 +95,20 @@ def get_all_agent_names() -> List[str]:
     all_agents = _load_json_data(AGENTS_FILE)
     return list(all_agents.keys())
 
+def get_agent_data(agent_name: str) -> Optional[AgentData]:
+    """
+    Retrieves Agent's data by its name.
+
+    Args:
+        agent_name: The desired Agent's name.
+
+    Returns:
+        An AgentData object containing the Agent's data, or empty if not found.
+    """
+    agent_dict = _load_json_data(AGENTS_FILE)
+    agent_data = AgentData.from_dict(agent_name, agent_dict.get(agent_name, {}))
+    return agent_data
+
 def get_agent_skill_data(agent_filename: str) -> Optional[AgentSkillData]:
     """
     Retrieves data for an Agent's skillset by its name.
@@ -102,7 +117,7 @@ def get_agent_skill_data(agent_filename: str) -> Optional[AgentSkillData]:
         agent_filename: The filename of the Agent's skillset file.
 
     Returns:
-        A dictionary containing the Agent's skill data, or None if not found.
+        An AgentSkillData object containing the Agent's skill data, or empty if not found.
     """
     skills_dict = _load_json_data(agent_filename)
     agent_skill_data = AgentSkillData.from_dict(skills_dict)

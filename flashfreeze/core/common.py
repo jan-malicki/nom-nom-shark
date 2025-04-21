@@ -64,3 +64,17 @@ class SkillType(StringEnum):
     ASSIST = "Assist"
     CHAIN_ATTACK = "Chain Attack"
     UNKNOWN = "Unknown"
+
+class AttackType(StringEnum):
+    STRIKE = "Strike"
+    SLASH = "Slash"
+    PIERCE = "Pierce"
+    UNKNOWN = "Unknown"
+
+class Specialty(StringEnum):
+    ANOMALY = "Anomaly"
+    ATTACK = "Attack"
+    DEFENSE = "Defense"
+    STUN = "Stun"
+    SUPPORT = "Support"
+    UNKNOWN = "Unknown"
