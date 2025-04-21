@@ -1,8 +1,0 @@
-{
-    "python.testing.pytestPath": "C:\\Users\\jan\\nom-nom-shark\\venv\\Scripts\\pytest.exe",
-    "python.testing.pytestEnabled": true,
-    "python.testing.pytestArgs": [
-        "."
-    ],
-    "python.testing.unittestEnabled": false
-}
