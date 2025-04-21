@@ -4,6 +4,8 @@ import sys
 import json
 from decimal import Decimal, InvalidOperation # Use Decimal for precision
 
+from flashfreeze.core.skill_data import AgentSkillData
+
 try:
     import django
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nom_nom_shark.settings') # Adjust project name
@@ -75,18 +77,17 @@ def test_load_known_agent():
     assert len(agent_names) > 0, "Agent ID list should not be empty (assuming data exists)."
     assert "Ellen" in agent_names, "A known agent ID should be in the list."
 
-def test_load_skill_data():
-    """Test loading data for a known skill."""
+def test_load_agent_skill_data():
+    """Test loading data for a known agent."""
     # --- ARRANGE ---
     agent_filename = gdl.ELLEN_SKILLS_FILE
-    skill_name = "Basic Attack: Saw Teeth Trimming"
 
     # --- ACT ---
-    skill_data = gdl.get_skill_data(agent_filename, skill_name)
+    skill_data = gdl.get_agent_skill_data(agent_filename)
 
     # --- ASSERT ---
-    assert skill_data is not None, f"Data for known skill '{skill_name}' should be loaded."
-    assert isinstance(skill_data, dict), f"Data for '{skill_name}' should be a dictionary."
+    assert skill_data is not None, f"Skill data for known agent '{agent_filename}' should be loaded."
+    assert isinstance(skill_data, AgentSkillData), f"Data for '{agent_filename}' should be an AgentSkillData object."
 
 def test_skill_scaling_integrity(all_skills_data): # Fixture is injected here
     """

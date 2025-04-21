@@ -4,6 +4,9 @@ from functools import lru_cache
 from typing import Dict, Any, Optional, List
 
 from django.conf import settings
+
+from flashfreeze.core.skill_data import AgentSkillData
+
 BASE_DIR = settings.BASE_DIR
 
 # Define the directory where your static JSON data is stored
@@ -91,20 +94,19 @@ def get_all_agent_names() -> List[str]:
     all_agents = _load_json_data(AGENTS_FILE)
     return list(all_agents.keys())
 
-def get_skill_data(agent_filename: str, skill_name: str) -> Optional[Dict[str, Any]]:
+def get_agent_skill_data(agent_filename: str) -> Optional[AgentSkillData]:
     """
-    Retrieves data for a specific skill by its name.
+    Retrieves data for an Agent's skillset by its name.
 
     Args:
-        skill_name: The name (key) of the skill.
+        agent_filename: The filename of the Agent's skillset file.
 
     Returns:
-        A dictionary containing the skill's data, or None if not found.
+        A dictionary containing the Agent's skill data, or None if not found.
     """
-    all_abilities = _load_json_data(agent_filename)
-    skills = all_abilities.get('Skills', {})
-    core_skill = all_abilities.get('Core Skill', {})
-    return skills.get(skill_name) or core_skill.get(skill_name)
+    skills_dict = _load_json_data(agent_filename)
+    agent_skill_data = AgentSkillData.from_dict(skills_dict)
+    return agent_skill_data
 
 def get_drive_disc_set_data(set_name: str) -> Optional[Dict[str, Any]]:
     """
