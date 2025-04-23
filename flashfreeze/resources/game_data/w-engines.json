@@ -5,7 +5,7 @@
         "base_atk": "684",
         "sub_stat": {
             "stat": "CRIT Rate",
-            "value": 0.24
+            "value": 24
         },
         "passive": {
             "name": "Metal Cat Claws",
@@ -24,8 +24,8 @@
         "rarity": "S",
         "base_atk": "684",
         "sub_stat": {
-            "stat": "ATK",
-            "value": 0.3
+            "stat": "ATK%",
+            "value": 30
         },
         "passive": {
             "name": "Scorching Breath",
@@ -45,7 +45,7 @@
         "base_atk": "713",
         "sub_stat": {
             "stat": "CRIT Rate",
-            "value": 0.24
+            "value": 24
         },
         "passive": {
             "name": "Lord of Seas",
@@ -65,7 +65,7 @@
         "base_atk": "713",
         "sub_stat": {
             "stat": "CRIT DMG",
-            "value": 0.48
+            "value": 48
         },
         "passive": {
             "name": "Growth Through Adversity",
@@ -85,7 +85,7 @@
         "base_atk": "713",
         "sub_stat": {
             "stat": "CRIT DMG",
-            "value": 0.48
+            "value": 48
         },
         "passive": {
             "name": "Security Patrol",
@@ -105,7 +105,7 @@
         "base_atk": "713",
         "sub_stat": {
             "stat": "CRIT Rate",
-            "value": 0.24
+            "value": 24
         },
         "passive": {
             "name": "False Personas",
@@ -125,7 +125,7 @@
         "base_atk": "713",
         "sub_stat": {
             "stat": "CRIT Rate",
-            "value": 0.24
+            "value": 24
         },
         "passive": {
             "name": "String & Melody",
@@ -145,7 +145,7 @@
         "base_atk": "713",
         "sub_stat": {
             "stat": "CRIT DMG",
-            "value": 0.48
+            "value": 48
         },
         "passive": {
             "name": "Tranquil Blossom",
