@@ -54,9 +54,9 @@ def mock_gdl():
     mock_gdl_obj.get_drive_main_stat_value = MagicMock(side_effect=mock_get_main_stat)
 
     # Use patch to replace the actual gdl module within the test's scope
-    # Adjust the target path ('flashfreeze.core.drive_disc_logic.gdl') if your
-    # import in drive_disc_logic.py is different (e.g., 'zzzdata.game_data_loader')
-    with patch('flashfreeze.core.drive_disc_logic.gdl', mock_gdl_obj):
+    # Adjust the target path ('flashfreeze.core.drive_disc_data.gdl') if your
+    # import in drive_disc_data.py is different (e.g., 'zzzdata.game_data_loader')
+    with patch('flashfreeze.core.drive_disc_data.gdl', mock_gdl_obj):
         yield mock_gdl_obj # Provide the mock to the test function if needed
 
 @pytest.fixture
