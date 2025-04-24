@@ -1,12 +1,13 @@
 import json
 import os
 from functools import lru_cache
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Set
 
 from django.conf import settings
 
 from flashfreeze.core.agent_data import AgentData
 from flashfreeze.core.skill_data import AgentSkillData
+from flashfreeze.core.common import Stat, Rarity
 
 BASE_DIR = settings.BASE_DIR
 
@@ -16,8 +17,16 @@ STATIC_DATA_DIR = os.path.join(BASE_DIR, 'flashfreeze', 'resources', 'game_data'
 # Define filenames for clarity
 AGENTS_FILE = 'agents.json'
 W_ENGINES_FILE = 'w-engines.json'
-DRIVE_DISCS_FILE = 'drive_discs.json'
+DRIVE_DISCS_SETS_FILE = 'drive_discs.json'
+DRIVE_DISCS_MAIN_STATS_FILE = 'drive_discs_mainstat_values.json'
+DRIVE_DISCS_SUB_STATS_FILE = 'drive_discs_substat_values.json'
 ENEMIES_FILE = 'enemies.json'
+
+PERCENTAGE_STATS: Set[Stat] = {
+    Stat.HP_PERCENT, Stat.ATK_PERCENT, Stat.DEF_PERCENT, Stat.PEN_RATIO,
+    Stat.CRIT_RATE, Stat.CRIT_DMG, Stat.ENERGY_REGEN,
+    Stat.PHYSICAL_DMG, Stat.FIRE_DMG, Stat.ICE_DMG, Stat.ELECTRIC_DMG, Stat.ETHER_DMG,
+}
 
 SKILLS_DIR = 'skills'
 ELLEN_SKILLS_FILE = os.path.join(SKILLS_DIR, 'ellen.json')
@@ -134,8 +143,87 @@ def get_drive_disc_set_data(set_name: str) -> Optional[Dict[str, Any]]:
         A dictionary containing the set's data (e.g., 2pc/4pc bonuses),
         or None if not found.
     """
-    all_sets = _load_json_data(DRIVE_DISCS_FILE)
+    all_sets = _load_json_data(DRIVE_DISCS_SETS_FILE)
     return all_sets.get(set_name)
+
+def get_drive_main_stat_value(rarity: Rarity, stat_type: Stat, level: int) -> Optional[float]:
+    """
+    Retrieves the main stat value for a Drive Disc.
+
+    Args:
+        rarity: The Rarity enum member (e.g., Rarity.S).
+        stat_type: The Stat enum member (e.g., Stat.ATK_PERCENT).
+        level: The integer level of the disc (0-15).
+
+    Returns:
+        The calculated stat value as a float (percentage stats divided by 100),
+        or None if the value for the specific stat/rarity/level combination
+        is not found in the JSON.
+    """
+    all_main_stats = _load_json_data(DRIVE_DISCS_MAIN_STATS_FILE)
+
+    # Use Enum values for keys (e.g., "HP%", "S")
+    stat_key = stat_type.value
+    rarity_key = rarity.value # Assumes Rarity enum values are "S", "A", "B"
+    level_key = str(level)
+
+    # Navigate the dictionary safely using .get()
+    stat_data = all_main_stats.get(stat_key, {})
+    rarity_data = stat_data.get(rarity_key, {})
+    raw_value = rarity_data.get(level_key)
+
+    if raw_value is None:
+        # Value for this specific level not found
+        # Could add interpolation later if needed
+        return None
+
+    try:
+        value = float(raw_value)
+        # Divide by 100 if it's a percentage stat
+        if stat_type in PERCENTAGE_STATS:
+            return value / 100.0
+        else:
+            return value
+    except (ValueError, TypeError):
+        print(f"Warning: Could not convert main stat value '{raw_value}' to float for {stat_key}/{rarity_key}/{level_key}")
+        return None
+
+def get_drive_substat_base_value(rarity: Rarity, stat_type: Stat) -> Optional[float]:
+    """
+    Retrieves the base value (value per roll/initial value) for a Drive Disc substat.
+
+    Args:
+        rarity: The Rarity enum member (e.g., Rarity.S).
+        stat_type: The Stat enum member (e.g., Stat.CRIT_RATE).
+
+    Returns:
+        The base stat value as a float (percentage stats divided by 100),
+        or None if the value for the specific stat/rarity combination
+        is not found in the JSON.
+    """
+    all_sub_stats = _load_json_data(DRIVE_DISCS_SUB_STATS_FILE)
+
+    # Use Enum values for keys (e.g., "HP%", "S")
+    stat_key = stat_type.value
+    rarity_key = rarity.value # Assumes Rarity enum values are "S", "A", "B"
+
+    # Navigate safely
+    stat_data = all_sub_stats.get(stat_key, {})
+    raw_value = stat_data.get(rarity_key)
+
+    if raw_value is None:
+        return None
+
+    try:
+        value = float(raw_value)
+        # Divide by 100 if it's a percentage stat
+        if stat_type in PERCENTAGE_STATS:
+            return value / 100.0
+        else:
+            return value
+    except (ValueError, TypeError):
+        print(f"Warning: Could not convert substat value '{raw_value}' to float for {stat_key}/{rarity_key}")
+        return None
 
 def get_enemy_data(enemy_name: str) -> Optional[Dict[str, Any]]:
     """

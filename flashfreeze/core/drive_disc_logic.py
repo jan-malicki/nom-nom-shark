@@ -7,8 +7,7 @@ from typing import Dict, List, Optional, Tuple, Set
 from .common import Stat, Rarity
 from .drive_disc_data import DriveDiscSetData # To link equipped disc to its set bonus info
 # Import game_data_loader to fetch main/sub stat values from JSON
-# Assuming it's accessible, adjust path as needed
-from .. import game_data_loader as gdl # Example: if loader is one level up
+from .. import game_data_loader as gdl
 
 # --- Constants Defining Drive Disc Rules ---
 
@@ -59,13 +58,12 @@ class SubStatInstance:
     def get_value(self, rarity: Rarity) -> float:
         """
         Calculates the value of this substat based on its type, rarity, and rolls.
-        Requires lookup tables for base values.
+        Uses gdl to fetch base values.
         """
-        # 1. Get base value from lookup table (JSON loaded via gdl)
-        # Example: base_value = gdl.get_drive_substat_base_value(rarity, self.stat_type)
-        # Placeholder - replace with actual data loading
-        base_value = self._get_placeholder_substat_base_value(rarity, self.stat_type)
+        # 1. Get base value from game_data_loader
+        base_value = gdl.get_drive_substat_base_value(rarity, self.stat_type)
         if base_value is None:
+            print(f"Warning: Base value not found for substat {self.stat_type.name} (Rarity: {rarity.name}). Returning 0.")
             return 0.0
 
         # 2. Calculate final value: base * (rolls + 1)
@@ -74,23 +72,6 @@ class SubStatInstance:
         final_value = base_value * (actual_rolls + 1)
 
         return final_value
-
-    def _get_placeholder_substat_base_value(self, rarity: Rarity, stat_type: Stat) -> Optional[float]:
-        """Placeholder for loading substat base values from JSON via gdl."""
-        # --- Replace this with actual gdl call ---
-        # Example structure for drive_disc_sub_stats.json:
-        # { "S": {"HP": 250, "ATK%": 0.04, ...}, "A": {...}, "B": {...} }
-        print(f"Placeholder: Fetching base value for {rarity.name} {stat_type.name}")
-        # Dummy values for demonstration
-        dummy_bases = {
-            Rarity.S: {Stat.HP: 254, Stat.ATK: 17, Stat.DEF: 17, Stat.HP_PERCENT: 0.043, Stat.ATK_PERCENT: 0.043, Stat.DEF_PERCENT: 0.054, Stat.PEN: 17, Stat.CRIT_RATE: 0.032, Stat.CRIT_DMG: 0.065, Stat.ANOMALY_PROFICIENCY: 19},
-            Rarity.A: {Stat.HP: 200, Stat.ATK: 13, Stat.DEF: 13, Stat.HP_PERCENT: 0.034, Stat.ATK_PERCENT: 0.034, Stat.DEF_PERCENT: 0.043, Stat.PEN: 13, Stat.CRIT_RATE: 0.026, Stat.CRIT_DMG: 0.052, Stat.ANOMALY_PROFICIENCY: 15},
-            Rarity.B: {Stat.HP: 150, Stat.ATK: 10, Stat.DEF: 10, Stat.HP_PERCENT: 0.026, Stat.ATK_PERCENT: 0.026, Stat.DEF_PERCENT: 0.032, Stat.PEN: 10, Stat.CRIT_RATE: 0.019, Stat.CRIT_DMG: 0.039, Stat.ANOMALY_PROFICIENCY: 11},
-        }
-        if rarity in dummy_bases and stat_type in dummy_bases[rarity]:
-            return dummy_bases[rarity][stat_type]
-        return None
-        # --- End of placeholder ---
 
 
 @dataclass
@@ -141,34 +122,29 @@ class EquippedDriveDisc:
     def get_main_stat_value(self) -> float:
         """
         Calculates the value of the main stat based on type, rarity, and level.
-        Requires lookup tables for main stat scaling.
+        Uses gdl to fetch main stat values.
+        If the value for the specific level is not found, attempts to return
+        the value for the maximum level for the disc's rarity.
         """
-        # 1. Get scaling data from lookup table (JSON loaded via gdl)
-        # Example: value = gdl.get_drive_main_stat_value(self.rarity, self.main_stat_type, self.level)
-        # Placeholder - replace with actual data loading
-        value = self._get_placeholder_main_stat_value()
-        return value if value is not None else 0.0
+        # 1. Try to get value for the current level from game_data_loader
+        value = gdl.get_drive_main_stat_value(self.rarity, self.main_stat_type, self.level)
 
-    def _get_placeholder_main_stat_value(self) -> Optional[float]:
-         """Placeholder for loading main stat values from JSON via gdl."""
-         # --- Replace this with actual gdl call ---
-         # Example structure for drive_disc_main_stats.json:
-         # { "S": { "HP%": {"0": 0.07, "1": ..., "15": 0.466}, "ATK%": {...}, ...}, "A": {...}, "B": {...} }
-         print(f"Placeholder: Fetching main stat value for {self.rarity.name} {self.main_stat_type.name} at level {self.level}")
-         # Dummy values for demonstration - very simplified
-         dummy_main_stats = {
-             Rarity.S: {Stat.HP_PERCENT: 0.466, Stat.ATK_PERCENT: 0.466, Stat.CRIT_RATE: 0.324, Stat.HP: 4780, Stat.ATK: 311, Stat.DEF: 389},
-             Rarity.A: {Stat.HP_PERCENT: 0.373, Stat.ATK_PERCENT: 0.373, Stat.CRIT_RATE: 0.259, Stat.HP: 3824, Stat.ATK: 249, Stat.DEF: 311},
-             Rarity.B: {Stat.HP_PERCENT: 0.280, Stat.ATK_PERCENT: 0.280, Stat.CRIT_RATE: 0.194, Stat.HP: 2868, Stat.ATK: 187, Stat.DEF: 233},
-         }
-         # This placeholder only returns max value, real implementation needs level lookup
-         if self.rarity in dummy_main_stats and self.main_stat_type in dummy_main_stats[self.rarity]:
-             # Crude scaling based on level for placeholder
-             max_val = dummy_main_stats[self.rarity][self.main_stat_type]
-             max_lvl = MAX_LEVEL_PER_RARITY.get(self.rarity, 1)
-             return max_val * (self.level / max_lvl) if max_lvl > 0 else 0.0
-         return None
-         # --- End of placeholder ---
+        if value is None:
+             # Value for current level not found, try getting max level value
+             max_level_for_rarity = MAX_LEVEL_PER_RARITY.get(self.rarity)
+             if max_level_for_rarity is not None:
+                 print(f"Info: Main stat value not found for {self.rarity.name} {self.main_stat_type.name} at level {self.level}. "
+                       f"Attempting fallback to max level {max_level_for_rarity}.")
+                 value = gdl.get_drive_main_stat_value(self.rarity, self.main_stat_type, max_level_for_rarity)
+
+             # If max level value is also None, return 0 as final fallback
+             if value is None:
+                 print(f"Warning: Max level ({max_level_for_rarity}) main stat value also not found for "
+                       f"{self.rarity.name} {self.main_stat_type.name}. Returning 0.")
+                 return 0.0
+
+        # Return the found value (either for current level or max level)
+        return value
 
     def get_all_substat_values(self) -> Dict[Stat, float]:
         """Calculates and returns a dictionary of {Stat: value} for all substats."""
@@ -189,4 +165,3 @@ class EquippedDriveDisc:
     #     for sub_stat, sub_value in self.get_all_substat_values().items():
     #         total_stats.add_stat(sub_stat, sub_value)
     #     return total_stats
-
