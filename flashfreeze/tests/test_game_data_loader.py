@@ -4,29 +4,17 @@ import sys
 import json
 from decimal import Decimal, InvalidOperation # Use Decimal for precision
 
-from flashfreeze.core.agent_data import AgentData
-from flashfreeze.core.common import Attribute, Rarity, Stat
-from flashfreeze.core.skill_data import AgentSkillData
-
 try:
     import django
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nom_nom_shark.settings') # Adjust project name
-    # django.setup() # pytest-django handles this; avoid calling directly in test files
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nom_nom_shark.settings')
 except ImportError:
     print("Warning: Django not found or DJANGO_SETTINGS_MODULE not set.")
     print("Data loader might fail if it depends on Django settings.")
 
-# Attempt to import the game data loader module
-try:
-    from flashfreeze import game_data_loader as gdl
-except ImportError:
-    print("Error: Could not import 'flashfreeze.game_data_loader'.")
-    print("Ensure this test script is runnable from your project structure,")
-    print("and the project root is correctly added to sys.path.")
-    sys.exit(1) # Exit if loader can't be imported
-except Exception as e:
-    print(f"An unexpected error occurred during import: {e}")
-    sys.exit(1)
+from flashfreeze.core.agent_data import AgentData
+from flashfreeze.core.common import Attribute, Rarity, Faction, Stat, SkillType
+from flashfreeze.core.skill_data import AgentSkillData
+from flashfreeze import game_data_loader as gdl
 
 # --- Pytest Fixtures ---
 
@@ -80,7 +68,7 @@ def test_load_known_agent():
     assert "Ellen" in agent_names, "A known agent ID should be in the list."
 
 def test_load_agent_skill_data():
-    """Test loading data for a known agent."""
+    """Test loading data for a known agent's skills."""
     # --- ARRANGE ---
     agent_filename = gdl.ELLEN_SKILLS_FILE
 
@@ -94,7 +82,7 @@ def test_load_agent_skill_data():
 def test_load_agent_data():
     """Test retrieving data for a known agent returns an AgentData object."""
     # --- ARRANGE ---
-    agent_name = "Ellen" # Assuming "Ellen" is in your agents.json
+    agent_name = "Ellen"
 
     # --- ACT ---
     # Assumes get_agent_data is corrected to return Optional[AgentData]
@@ -110,6 +98,71 @@ def test_load_agent_data():
     assert agent_obj.core_stat.stat == Stat.CRIT_RATE # Check core stat enum
     assert agent_obj.core_stat.value == 0.144 # Check core stat value
     assert agent_obj.info.full_name == "Ellen Joe" # Check info block
+
+@pytest.mark.parametrize("rarity, stat_type, expected_value", [
+    # S Rank
+    (Rarity.S, Stat.HP, 112.0),
+    (Rarity.S, Stat.ATK_PERCENT, 0.03), # 3 / 100
+    (Rarity.S, Stat.CRIT_RATE, 0.024), # 2.4 / 100
+    (Rarity.S, Stat.CRIT_DMG, 0.048), # 4.8 / 100
+    (Rarity.S, Stat.PEN, 9.0),
+    # A Rank
+    (Rarity.A, Stat.DEF, 10.0),
+    (Rarity.A, Stat.DEF_PERCENT, 0.032), # 3.2 / 100
+    (Rarity.A, Stat.ANOMALY_PROFICIENCY, 6.0),
+    # B Rank
+    (Rarity.B, Stat.HP_PERCENT, 0.01), # 1 / 100
+    (Rarity.B, Stat.PEN, 3.0),
+    # Edge cases
+    (Rarity.S, Stat.IMPACT, None), # Impact is not a substat in the provided JSON
+    (Rarity.C, Stat.ATK, None), # Rarity C not in substat JSON
+])
+def test_get_drive_substat_base_value(rarity, stat_type, expected_value):
+    """Test fetching drive disc substat base values."""
+    value = gdl.get_drive_substat_base_value(rarity, stat_type)
+    if expected_value is None:
+        assert value is None
+    else:
+        assert value == pytest.approx(expected_value)
+
+@pytest.mark.parametrize("rarity, stat_type, level, expected_value", [
+    # S Rank Main Stats
+    (Rarity.S, Stat.HP, 15, 2200.0),
+    (Rarity.S, Stat.HP, 0, 550.0),
+    (Rarity.S, Stat.ATK, 15, 316.0),
+    (Rarity.S, Stat.DEF, 15, 184.0),
+    (Rarity.S, Stat.HP_PERCENT, 15, 0.30), # 30 / 100
+    (Rarity.S, Stat.ATK_PERCENT, 15, 0.30), # 30 / 100
+    (Rarity.S, Stat.FIRE_DMG, 15, 0.30), # 30 / 100
+    (Rarity.S, Stat.DEF_PERCENT, 15, 0.48), # 48 / 100
+    (Rarity.S, Stat.PEN_RATIO, 15, 0.24), # 24 / 100
+    (Rarity.S, Stat.CRIT_RATE, 15, 0.24), # 24 / 100
+    (Rarity.S, Stat.CRIT_DMG, 15, 0.48), # 48 / 100
+    (Rarity.S, Stat.ANOMALY_PROFICIENCY, 15, 92.0),
+    (Rarity.S, Stat.ENERGY_REGEN, 15, 0.60), # 60 / 100
+    (Rarity.S, Stat.IMPACT, 15, 18.0),
+    # A Rank Main Stats (Max Level 12)
+    (Rarity.A, Stat.HP, 12, 1468.0),
+    (Rarity.A, Stat.ATK, 12, 212.0),
+    (Rarity.A, Stat.CRIT_DMG, 12, 0.32), # 32 / 100
+    # B Rank Main Stats (Max Level 9)
+    (Rarity.B, Stat.DEF, 9, 60.0),
+    (Rarity.B, Stat.HP_PERCENT, 9, 0.10), # 10 / 100
+    # Missing Level (Expect None from loader)
+    (Rarity.S, Stat.HP_PERCENT, 1, None), # Level 1 not defined for HP% S rank
+    (Rarity.A, Stat.ATK, 0, None), # Level 0 not defined for ATK A rank
+    # Non-existent stat/rarity combo
+    (Rarity.S, Stat.PEN, 15, None), # PEN is not a main stat
+    (Rarity.C, Stat.HP, 9, None), # Rarity C not defined
+])
+def test_get_drive_main_stat_value(rarity, stat_type, level, expected_value):
+    """Test fetching drive disc main stat values for various levels/rarities."""
+    value = gdl.get_drive_main_stat_value(rarity, stat_type, level)
+    if expected_value is None:
+        assert value is None
+    else:
+        # Use approx for float comparisons
+        assert value == pytest.approx(expected_value)
 
 def test_skill_scaling_integrity(all_skills_data: AgentSkillData): # Fixture is injected here
     """

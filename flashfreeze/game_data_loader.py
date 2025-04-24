@@ -28,6 +28,10 @@ PERCENTAGE_STATS: Set[Stat] = {
     Stat.PHYSICAL_DMG, Stat.FIRE_DMG, Stat.ICE_DMG, Stat.ELECTRIC_DMG, Stat.ETHER_DMG,
 }
 
+DAMAGE_BONUS_STATS: Set[Stat] = {
+    Stat.PHYSICAL_DMG, Stat.FIRE_DMG, Stat.ICE_DMG, Stat.ELECTRIC_DMG, Stat.ETHER_DMG,
+}
+
 SKILLS_DIR = 'skills'
 ELLEN_SKILLS_FILE = os.path.join(SKILLS_DIR, 'ellen.json')
 
@@ -163,7 +167,10 @@ def get_drive_main_stat_value(rarity: Rarity, stat_type: Stat, level: int) -> Op
     all_main_stats = _load_json_data(DRIVE_DISCS_MAIN_STATS_FILE)
 
     # Use Enum values for keys (e.g., "HP%", "S")
-    stat_key = stat_type.value
+    if stat_type in DAMAGE_BONUS_STATS:
+        stat_key = "DMG"
+    else:
+        stat_key = stat_type.value
     rarity_key = rarity.value # Assumes Rarity enum values are "S", "A", "B"
     level_key = str(level)
 

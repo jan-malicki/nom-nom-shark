@@ -110,7 +110,7 @@
             "15": 48
         }
     },
-    "PEN_RATIO": {
+    "PEN Ratio": {
         "B": {
             "9": 8
         },
@@ -121,7 +121,7 @@
             "15": 24
         }
     },
-    "CRIT_RATE": {
+    "CRIT Rate": {
         "B": {
             "9": 8
         },
@@ -132,7 +132,7 @@
             "15": 24
         }
     },
-    "CRIT_DMG": {
+    "CRIT DMG": {
         "B": {
             "9": 16
         },
@@ -143,7 +143,7 @@
             "15": 48
         }
     },
-    "ANOMALY_PROFICIENCY": {
+    "Anomaly Proficiency": {
         "B": {
             "9": 32
         },
@@ -165,7 +165,7 @@
             "15": 30
         }
     },
-    "ANOMALY_MASTERY": {
+    "Anomaly Mastery": {
         "B": {
             "9": 10
         },
@@ -176,7 +176,7 @@
             "15": 30
         }
     },
-    "ENERGY_REGEN": {
+    "Energy Regen": {
         "B": {
             "9": 20
         },
@@ -187,7 +187,7 @@
             "15": 60
         }
     },
-    "IMPACT": {
+    "Impact": {
         "B": {
             "9": 6
         },
