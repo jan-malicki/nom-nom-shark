@@ -5,11 +5,6 @@ import os
 import sys
 from typing import Dict, Any, Optional, List
 
-# --- Configuration ---
-# Add the project root directory to the Python path
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, PROJECT_ROOT)
-
 from flashfreeze.core.drive_disc_set_data import DriveDiscSetData, DriveDiscSetBonus
 from flashfreeze.core.common import Stat
 

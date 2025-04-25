@@ -5,14 +5,6 @@ import os
 import sys
 from unittest.mock import patch, MagicMock
 
-# --- Configuration ---
-try:
-    import django
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nom_nom_shark.settings')
-except ImportError:
-    print("Warning: Django not found or DJANGO_SETTINGS_MODULE not set.")
-    print("Data loader might fail if it depends on Django settings.")
-
 from flashfreeze.core.drive_disc_data import EquippedDriveDisc, SubStatInstance
 from flashfreeze.core.drive_disc_set_data import DriveDiscSetData # Needed for EquippedDriveDisc
 from flashfreeze.core.common import Stat, Rarity

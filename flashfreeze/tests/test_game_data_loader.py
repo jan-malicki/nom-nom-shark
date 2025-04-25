@@ -1,15 +1,10 @@
+# tests/test_game_data_loader.py
+
 import pytest
 import os
 import sys
 import json
 from decimal import Decimal, InvalidOperation # Use Decimal for precision
-
-try:
-    import django
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nom_nom_shark.settings')
-except ImportError:
-    print("Warning: Django not found or DJANGO_SETTINGS_MODULE not set.")
-    print("Data loader might fail if it depends on Django settings.")
 
 from flashfreeze.core.agent_data import AgentData
 from flashfreeze.core.common import Attribute, Rarity, Faction, Stat, SkillType
