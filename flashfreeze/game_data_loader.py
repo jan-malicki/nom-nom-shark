@@ -3,16 +3,13 @@ import os
 from functools import lru_cache
 from typing import Dict, Any, Optional, List, Set
 
-from django.conf import settings
-
 from flashfreeze.core.agent_data import AgentData
 from flashfreeze.core.skill_data import AgentSkillData
 from flashfreeze.core.common import Stat, Rarity
 
-BASE_DIR = settings.BASE_DIR
-
 # Define the directory where your static JSON data is stored
-STATIC_DATA_DIR = os.path.join(BASE_DIR, 'flashfreeze', 'resources', 'game_data')
+LOADER_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_DATA_DIR = os.path.join(LOADER_DIR, 'resources', 'game_data')
 
 # Define filenames for clarity
 AGENTS_FILE = 'agents.json'
