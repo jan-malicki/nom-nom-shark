@@ -6,16 +6,16 @@ from typing import Dict, List, Optional, Any
 from .common import Rarity, Stat, Specialty
 
 @dataclass
-class WEngineSubStat:
-    """Represents the sub_stat block for a W-Engine."""
+class WEngineAdvancedStat:
+    """Represents the advanced_stat block for a W-Engine."""
     stat: Stat = Stat.UNKNOWN
     value: float = 0.0
 
     @classmethod
-    def from_dict(cls, data: Optional[Dict[str, Any]]) -> Optional['WEngineSubStat']:
-        """Creates WEngineSubStat instance from a dictionary."""
+    def from_dict(cls, data: Optional[Dict[str, Any]]) -> Optional['WEngineAdvancedStat']:
+        """Creates WEngineAdvancedStat instance from a dictionary."""
         if not isinstance(data, dict):
-            return None # Return None if sub_stat block is missing or not a dict
+            return None # Return None if advanced_stat block is missing or not a dict
 
         try:
             return cls(
@@ -23,7 +23,7 @@ class WEngineSubStat:
                 value=float(data.get("value", 0.0))
             )
         except (ValueError, TypeError) as e:
-            print(f"Warning: Could not parse W-Engine sub stat data: {data}. Error: {e}")
+            print(f"Warning: Could not parse W-Engine advanced stat data: {data}. Error: {e}")
             return None # Return None on parsing error
 
 
@@ -128,7 +128,7 @@ class WEngineData:
     specialty: Specialty = Specialty.UNKNOWN
     rarity: Rarity = Rarity.UNKNOWN
     base_atk: int = 0
-    sub_stat: Optional[WEngineSubStat] = None
+    advanced_stat: Optional[WEngineAdvancedStat] = None
     passive: Optional[WEnginePassive] = None
     # Add other fields if they exist
 
@@ -153,6 +153,64 @@ class WEngineData:
             rarity=Rarity.from_string(data.get("rarity", "")),
             base_atk=base_atk_val,
             # Parse nested objects using their respective from_dict methods
-            sub_stat=WEngineSubStat.from_dict(data.get("sub_stat")), # Pass the sub-dict directly
+            advanced_stat=WEngineAdvancedStat.from_dict(data.get("advanced_stat")), # Pass the sub-dict directly
             passive=WEnginePassive.from_dict(data.get("passive")) # Pass the sub-dict directly
         )
+    
+@dataclass
+class EquippedWEngine:
+    """Represents a specific W-Engine instance to be equipped by an agent."""
+    # Static data for the W-Engine type
+    wengine_data: WEngineData
+    # Instance-specific details
+    level: int = 0
+    modification: int = 0 # Modification level (0-5)
+    phase: int = 1 # Overclock level (1-5)
+
+    def __post_init__(self):
+        """Validate level and phase."""
+        # Basic validation, assuming max level is 90 for W-Engines? Adjust if needed.
+        self.level = max(1, min(self.level, 60))
+        self.modification = max(0, min(self.modification, 5))
+        self.phase = max(1, min(self.phase, 5))
+
+        # Validate level based on modification
+        min_level = self.modification * 10
+        max_level = min_level + 10
+        if not (min_level <= self.level <= max_level):
+            print(f"Warning: Level {self.level} is out of range for modification {self.modification}. Adjusting.")
+            self.level = max(min_level, min(self.level, max_level))
+
+    def get_current_base_atk(self) -> int:
+        """Gets the W-Engine's base ATK for its current level."""
+        # Needs a gdl function to fetch W-Engine base ATK by level
+        # Example: base_atk = gdl.get_wengine_base_atk(self.wengine_data.name, self.level)
+        # Placeholder - using the value stored directly in WEngineData for now
+        # This assumes WEngineData.base_atk holds the value for the *max* level (e.g., 90)
+        # A real implementation needs level-based lookup.
+        print(f"Placeholder: Fetching W-Engine base ATK for level {self.level}. Using stored max value for now.")
+        return self.wengine_data.base_atk # Replace with actual level lookup
+
+    def get_advanced_stat(self) -> Optional[tuple['Stat', float]]:
+        """Returns the advanced stat type (Enum) and value, or None."""
+        if self.wengine_data.advanced_stat:
+            # Assuming WEngineData.advanced_stat stores the *max* level advanced stat value
+            # A real implementation might need level scaling lookup here too.
+            print("Placeholder: Returning max level W-Engine advanced stat value.")
+            return (self.wengine_data.advanced_stat.stat, self.wengine_data.advanced_stat.value)
+        return None
+
+    def get_passive_value(self, value_key: str) -> Optional[Any]:
+        """
+        Gets a specific value from the passive effect based on the
+        equipped phase (overclock level).
+        """
+        if self.wengine_data.passive:
+            return self.wengine_data.passive.get_passive_value(self.phase, value_key)
+        return None
+
+    def get_formatted_passive_description(self) -> Optional[str]:
+        """Gets the passive description formatted for the equipped phase."""
+        if self.wengine_data.passive:
+            return self.wengine_data.passive.get_formatted_description(self.phase)
+        return None

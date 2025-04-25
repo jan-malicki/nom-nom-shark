@@ -76,7 +76,7 @@ class SubStatInstance:
 
 @dataclass
 class EquippedDriveDisc:
-    """Represents a specific Drive Disc instance equipped by an agent."""
+    """Represents a specific Drive Disc instance to be equipped by an agent."""
     # Reference to the static set data (loaded elsewhere)
     set_data: DriveDiscSetData
     rarity: Rarity

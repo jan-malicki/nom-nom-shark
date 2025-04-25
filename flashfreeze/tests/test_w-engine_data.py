@@ -5,7 +5,7 @@ import os
 import sys
 from typing import Dict, Any, Optional, List
 
-from flashfreeze.core.w_engine_data import WEngineData, WEngineSubStat, WEnginePassive
+from flashfreeze.core.w_engine_data import WEngineData, WEngineAdvancedStat, WEnginePassive
 from flashfreeze.core.common import Rarity, Stat, Specialty
 
 # --- Test Data Fixtures ---
@@ -17,7 +17,7 @@ def steel_cushion_dict() -> Dict[str, Any]:
         "specialty": "attack", # Use lowercase as in original JSON example
         "rarity": "S",
         "base_atk": "684",
-        "sub_stat": {
+        "advanced_stat": {
             "stat": "CRIT Rate",
             "value": 0.24
         },
@@ -52,48 +52,48 @@ def steel_cushion_passive_obj(steel_cushion_obj) -> Optional[WEnginePassive]:
 
 # --- Consolidated Tests ---
 
-def test_wenginesubstat_from_dict():
-    """Test WEngineSubStat.from_dict parsing and defaults."""
+def test_wengineadvancedstat_from_dict():
+    """Test WEngineAdvancedStat.from_dict parsing and defaults."""
     # Valid case
     data_valid = {"stat": "CRIT DMG", "value": 0.48}
-    sub_stat_valid = WEngineSubStat.from_dict(data_valid)
-    assert sub_stat_valid is not None
-    assert isinstance(sub_stat_valid, WEngineSubStat)
-    assert sub_stat_valid.stat == Stat.CRIT_DMG
-    assert sub_stat_valid.value == 0.48
+    advanced_stat_valid = WEngineAdvancedStat.from_dict(data_valid)
+    assert advanced_stat_valid is not None
+    assert isinstance(advanced_stat_valid, WEngineAdvancedStat)
+    assert advanced_stat_valid.stat == Stat.CRIT_DMG
+    assert advanced_stat_valid.value == 0.48
 
     # Missing value
     data_no_val = {"stat": "ATK"}
-    sub_stat_no_val = WEngineSubStat.from_dict(data_no_val)
-    assert sub_stat_no_val is not None
-    assert sub_stat_no_val.stat == Stat.ATK
-    assert sub_stat_no_val.value == 0.0 # Default
+    advanced_stat_no_val = WEngineAdvancedStat.from_dict(data_no_val)
+    assert advanced_stat_no_val is not None
+    assert advanced_stat_no_val.stat == Stat.ATK
+    assert advanced_stat_no_val.value == 0.0 # Default
 
     # Missing stat
     data_no_stat = {"value": 0.3}
-    sub_stat_no_stat = WEngineSubStat.from_dict(data_no_stat)
-    assert sub_stat_no_stat is not None
-    assert sub_stat_no_stat.stat == Stat.UNKNOWN # Default
-    assert sub_stat_no_stat.value == 0.3
+    advanced_stat_no_stat = WEngineAdvancedStat.from_dict(data_no_stat)
+    assert advanced_stat_no_stat is not None
+    assert advanced_stat_no_stat.stat == Stat.UNKNOWN # Default
+    assert advanced_stat_no_stat.value == 0.3
 
     # Invalid stat string
     data_inv_stat = {"stat": "Invalid Stat Name", "value": 0.5}
-    sub_stat_inv_stat = WEngineSubStat.from_dict(data_inv_stat)
-    assert sub_stat_inv_stat is not None
-    assert sub_stat_inv_stat.stat == Stat.UNKNOWN # Parsed as UNKNOWN
-    assert sub_stat_inv_stat.value == 0.5
+    advanced_stat_inv_stat = WEngineAdvancedStat.from_dict(data_inv_stat)
+    assert advanced_stat_inv_stat is not None
+    assert advanced_stat_inv_stat.stat == Stat.UNKNOWN # Parsed as UNKNOWN
+    assert advanced_stat_inv_stat.value == 0.5
 
     # Invalid value type
     data_inv_val = {"stat": "HP", "value": "not a number"}
-    sub_stat_inv_val = WEngineSubStat.from_dict(data_inv_val)
-    assert sub_stat_inv_val is None # Should fail parsing
+    advanced_stat_inv_val = WEngineAdvancedStat.from_dict(data_inv_val)
+    assert advanced_stat_inv_val is None # Should fail parsing
 
     # None and Empty input
-    assert WEngineSubStat.from_dict(None) is None
-    sub_stat_empty = WEngineSubStat.from_dict({})
-    assert sub_stat_empty is not None # Returns default object
-    assert sub_stat_empty.stat == Stat.UNKNOWN
-    assert sub_stat_empty.value == 0.0
+    assert WEngineAdvancedStat.from_dict(None) is None
+    advanced_stat_empty = WEngineAdvancedStat.from_dict({})
+    assert advanced_stat_empty is not None # Returns default object
+    assert advanced_stat_empty.stat == Stat.UNKNOWN
+    assert advanced_stat_empty.value == 0.0
 
 def test_wenginepassive_from_dict(steel_cushion_dict):
     """Test WEnginePassive.from_dict parsing and defaults."""
@@ -206,10 +206,10 @@ def test_wenginedata_from_dict(steel_cushion_dict):
     assert obj_valid.specialty == Specialty.ATTACK # Check enum parsing
     assert obj_valid.rarity == Rarity.S
     assert obj_valid.base_atk == 684 # Check int conversion
-    assert obj_valid.sub_stat is not None
-    assert isinstance(obj_valid.sub_stat, WEngineSubStat)
-    assert obj_valid.sub_stat.stat == Stat.CRIT_RATE
-    assert obj_valid.sub_stat.value == 0.24
+    assert obj_valid.advanced_stat is not None
+    assert isinstance(obj_valid.advanced_stat, WEngineAdvancedStat)
+    assert obj_valid.advanced_stat.stat == Stat.CRIT_RATE
+    assert obj_valid.advanced_stat.value == 0.24
     assert obj_valid.passive is not None
     assert isinstance(obj_valid.passive, WEnginePassive)
     assert obj_valid.passive.name == "Metal Cat Claws"
@@ -231,7 +231,7 @@ def test_wenginedata_from_dict(steel_cushion_dict):
     assert obj_missing.base_atk == 100
     assert obj_missing.specialty == Specialty.UNKNOWN # Default enum
     assert obj_missing.rarity == Rarity.UNKNOWN # Default enum
-    assert obj_missing.sub_stat is None
+    assert obj_missing.advanced_stat is None
     assert obj_missing.passive is None
 
     # --- Test None Input ---
@@ -244,6 +244,6 @@ def test_wenginedata_from_dict(steel_cushion_dict):
     assert obj_empty.specialty == Specialty.UNKNOWN
     assert obj_empty.rarity == Rarity.UNKNOWN
     assert obj_empty.base_atk == 0
-    assert obj_empty.sub_stat is None
+    assert obj_empty.advanced_stat is None
     assert obj_empty.passive is None
 
