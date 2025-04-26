@@ -5,7 +5,7 @@ import os
 import sys
 from typing import Dict, Any, Optional, List
 
-from flashfreeze.core.w_engine_data import WEngineData, WEngineAdvancedStat, WEnginePassive
+from flashfreeze.core.w_engine_data import WEngineData, WEngineAdvancedStat, WEnginePassive, EquippedWEngine
 from flashfreeze.core.common import Rarity, Stat, Specialty
 
 # --- Test Data Fixtures ---
@@ -247,3 +247,101 @@ def test_wenginedata_from_dict(steel_cushion_dict):
     assert obj_empty.advanced_stat is None
     assert obj_empty.passive is None
 
+def test_equippedwengine_post_init_valid(steel_cushion_obj):
+    """Test successful creation with valid parameters."""
+    try:
+        EquippedWEngine(
+            wengine_data=steel_cushion_obj,
+            level=55, # Valid for mod 5
+            modification=5,
+            phase=3
+        )
+    except Exception as e:
+        pytest.fail(f"Valid EquippedWEngine raised an unexpected error: {e}")
+
+@pytest.mark.parametrize("level, modification, phase, expected_level, expected_mod, expected_phase", [
+    (70, 5, 3, 60, 5, 3),   # Level too high for mod 5 -> clamped to 60
+    (-5, 0, 3, 0, 0, 3),    # Level too low -> clamped to 0
+    (50, 6, 3, 50, 5, 3),   # Modification too high -> clamped to 5
+    (10, -1, 3, 10, 0, 3),  # Modification too low -> clamped to 0
+    (35, 3, 0, 35, 3, 1),   # Phase too low -> clamped to 1
+    (35, 3, 6, 35, 3, 5),   # Phase too high -> clamped to 5
+])
+def test_equippedwengine_post_init_clamping(steel_cushion_obj, level, modification, phase, expected_level, expected_mod, expected_phase):
+    """Test clamping of level, modification, and phase."""
+    eq_wengine = EquippedWEngine(steel_cushion_obj, level, modification, phase)
+    assert eq_wengine.level == expected_level
+    assert eq_wengine.modification == expected_mod
+    assert eq_wengine.phase == expected_phase
+
+@pytest.mark.parametrize("level, modification, expected_final_level", [
+    (25, 1, 20), # Level 25 too high for mod 1 (max 20) -> clamped to 20
+    ( 5, 1, 10), # Level 5 too low for mod 1 (min 10) -> clamped to 10
+    (42, 4, 42), # Level 42 is valid for mod 4 (40-50)
+    (59, 5, 59), # Level 59 is valid for mod 5 (50-60)
+    ( 0, 0, 0),  # Level 0 is valid for mod 0 (0-10)
+    (10, 0, 10), # Level 10 valid for mod 0 (0-10)
+    (10, 1, 10), # Level 10 valid for mod 1 (10-20)
+    (20, 1, 20), # Level 20 valid for mod 1 (10-20)
+    (20, 2, 20), # Level 20 valid for mod 2 (20-30)
+    (30, 2, 30), # Level 30 valid for mod 2 (20-30)
+    (30, 3, 30), # Level 30 valid for mod 3 (30-40)
+    (40, 3, 40), # Level 40 valid for mod 3 (30-40)
+    (40, 4, 40), # Level 40 valid for mod 4 (40-50)
+    (50, 4, 50), # Level 50 valid for mod 4 (40-50)
+    (50, 5, 50), # Level 50 is valid for mod 5 (50-60)
+    (60, 5, 60), # Level 60 is valid for mod 5 (50-60)
+])
+def test_equippedwengine_post_init_level_modification_range(steel_cushion_obj, level, modification, expected_final_level):
+    """Test level adjustment based on modification range."""
+    # Note: The print statement in __post_init__ will show during test runs with -s
+    eq_wengine = EquippedWEngine(steel_cushion_obj, level, modification, 1)
+    assert eq_wengine.level == expected_final_level
+
+def test_equippedwengine_get_current_base_atk(steel_cushion_obj):
+    """Test get_current_base_atk (currently placeholder behavior)."""
+    # Test with different levels, should currently return the max level base ATK
+    # stored in wengine_data until gdl lookup is implemented.
+    eq_wengine_l10 = EquippedWEngine(steel_cushion_obj, level=10, modification=0, phase=1)
+    eq_wengine_l60 = EquippedWEngine(steel_cushion_obj, level=60, modification=5, phase=1)
+
+    # WEngineData stores base_atk as int after parsing
+    expected_max_base_atk = steel_cushion_obj.base_atk
+
+    # TODO: Update this test when get_current_base_atk uses gdl lookup
+    assert eq_wengine_l10.get_current_base_atk() == expected_max_base_atk
+    assert eq_wengine_l60.get_current_base_atk() == expected_max_base_atk
+
+def test_equippedwengine_get_advanced_stat(steel_cushion_obj):
+    """Test get_advanced_stat."""
+    eq_wengine = EquippedWEngine(steel_cushion_obj, level=60, modification=5, phase=1)
+    adv_stat = eq_wengine.get_advanced_stat()
+    assert adv_stat is not None
+    assert isinstance(adv_stat, tuple)
+    assert adv_stat[0] == Stat.CRIT_RATE
+    assert adv_stat[1] == pytest.approx(0.24)
+
+@pytest.mark.parametrize("phase, key, expected_value", [
+    (1, "physical_dmg", 20),
+    (5, "back_dmg", 50),
+    (3, "physical_dmg", 30),
+    (1, "non_existent_key", None),
+])
+def test_equippedwengine_get_passive_value(steel_cushion_obj, phase, key, expected_value):
+    """Test get_passive_value fetches correct value based on phase."""
+    eq_wengine = EquippedWEngine(steel_cushion_obj, level=60, modification=5, phase=phase)
+    value = eq_wengine.get_passive_value(key)
+    assert value == expected_value
+
+@pytest.mark.parametrize("phase, expected_desc_part_1, expected_desc_part_2", [
+    (1, "by 20%", "by 25%"),
+    (3, "by 30%", "by 38%"),
+    (5, "by 40%", "by 50%"),
+])
+def test_equippedwengine_get_formatted_passive_description(steel_cushion_obj, phase, expected_desc_part_1, expected_desc_part_2):
+    """Test get_formatted_passive_description formats based on phase."""
+    eq_wengine = EquippedWEngine(steel_cushion_obj, level=60, modification=5, phase=phase)
+    formatted = eq_wengine.get_formatted_passive_description()
+    assert isinstance(formatted, str)
+    assert expected_desc_part_1 in formatted
+    assert expected_desc_part_2 in formatted

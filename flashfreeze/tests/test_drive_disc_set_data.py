@@ -27,23 +27,6 @@ def woodpecker_dict() -> Dict[str, Any]:
         }
     }
 
-@pytest.fixture(scope="module")
-def polar_metal_dict() -> Dict[str, Any]:
-    """Raw dictionary data for Polar Metal (different 4pc values)."""
-    return {
-        "2-piece": {
-            "stat": "Ice DMG",
-            "value": 0.1
-        },
-        "4-piece": {
-            "description": "Increase the DMG of Basic Attack and Dash Attack by {basic_dash_dmg}%. When any squad member inflicts Freeze or Shatter, this effect increases by an additional {basic_dash_dmg}% for {duration}s.",
-            "values": {
-                "basic_dash_dmg": 20,
-                "duration": 12
-            }
-        }
-    }
-
 # Fixture for a valid, parsed DriveDiscSetData object
 @pytest.fixture(scope="module")
 def woodpecker_obj(woodpecker_dict) -> Optional[DriveDiscSetData]:

@@ -170,7 +170,7 @@ class EquippedWEngine:
     def __post_init__(self):
         """Validate level and phase."""
         # Basic validation, assuming max level is 90 for W-Engines? Adjust if needed.
-        self.level = max(1, min(self.level, 60))
+        self.level = max(0, min(self.level, 60))
         self.modification = max(0, min(self.modification, 5))
         self.phase = max(1, min(self.phase, 5))
 
