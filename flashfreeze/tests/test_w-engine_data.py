@@ -5,7 +5,7 @@ import os
 import sys
 from typing import Dict, Any, Optional, List
 
-from flashfreeze.core.w_engine_data import WEngineData, WEngineAdvancedStat, WEnginePassive, EquippedWEngine
+from flashfreeze.core.w_engine_data import WEngineData, WEngineAdvancedStat, WEnginePassive, WEngine
 from flashfreeze.core.common import Rarity, Stat, Specialty
 
 # --- Test Data Fixtures ---
@@ -250,7 +250,7 @@ def test_wenginedata_from_dict(steel_cushion_dict):
 def test_equippedwengine_post_init_valid(steel_cushion_obj):
     """Test successful creation with valid parameters."""
     try:
-        EquippedWEngine(
+        WEngine(
             wengine_data=steel_cushion_obj,
             level=55, # Valid for mod 5
             modification=5,
@@ -269,7 +269,7 @@ def test_equippedwengine_post_init_valid(steel_cushion_obj):
 ])
 def test_equippedwengine_post_init_clamping(steel_cushion_obj, level, modification, phase, expected_level, expected_mod, expected_phase):
     """Test clamping of level, modification, and phase."""
-    eq_wengine = EquippedWEngine(steel_cushion_obj, level, modification, phase)
+    eq_wengine = WEngine(steel_cushion_obj, level, modification, phase)
     assert eq_wengine.level == expected_level
     assert eq_wengine.modification == expected_mod
     assert eq_wengine.phase == expected_phase
@@ -295,15 +295,15 @@ def test_equippedwengine_post_init_clamping(steel_cushion_obj, level, modificati
 def test_equippedwengine_post_init_level_modification_range(steel_cushion_obj, level, modification, expected_final_level):
     """Test level adjustment based on modification range."""
     # Note: The print statement in __post_init__ will show during test runs with -s
-    eq_wengine = EquippedWEngine(steel_cushion_obj, level, modification, 1)
+    eq_wengine = WEngine(steel_cushion_obj, level, modification, 1)
     assert eq_wengine.level == expected_final_level
 
 def test_equippedwengine_get_current_base_atk(steel_cushion_obj):
     """Test get_current_base_atk (currently placeholder behavior)."""
     # Test with different levels, should currently return the max level base ATK
     # stored in wengine_data until gdl lookup is implemented.
-    eq_wengine_l10 = EquippedWEngine(steel_cushion_obj, level=10, modification=0, phase=1)
-    eq_wengine_l60 = EquippedWEngine(steel_cushion_obj, level=60, modification=5, phase=1)
+    eq_wengine_l10 = WEngine(steel_cushion_obj, level=10, modification=0, phase=1)
+    eq_wengine_l60 = WEngine(steel_cushion_obj, level=60, modification=5, phase=1)
 
     # WEngineData stores base_atk as int after parsing
     expected_max_base_atk = steel_cushion_obj.base_atk
@@ -314,7 +314,7 @@ def test_equippedwengine_get_current_base_atk(steel_cushion_obj):
 
 def test_equippedwengine_get_advanced_stat(steel_cushion_obj):
     """Test get_advanced_stat."""
-    eq_wengine = EquippedWEngine(steel_cushion_obj, level=60, modification=5, phase=1)
+    eq_wengine = WEngine(steel_cushion_obj, level=60, modification=5, phase=1)
     adv_stat = eq_wengine.get_advanced_stat()
     assert adv_stat is not None
     assert isinstance(adv_stat, tuple)
@@ -329,7 +329,7 @@ def test_equippedwengine_get_advanced_stat(steel_cushion_obj):
 ])
 def test_equippedwengine_get_passive_value(steel_cushion_obj, phase, key, expected_value):
     """Test get_passive_value fetches correct value based on phase."""
-    eq_wengine = EquippedWEngine(steel_cushion_obj, level=60, modification=5, phase=phase)
+    eq_wengine = WEngine(steel_cushion_obj, level=60, modification=5, phase=phase)
     value = eq_wengine.get_passive_value(key)
     assert value == expected_value
 
@@ -340,7 +340,7 @@ def test_equippedwengine_get_passive_value(steel_cushion_obj, phase, key, expect
 ])
 def test_equippedwengine_get_formatted_passive_description(steel_cushion_obj, phase, expected_desc_part_1, expected_desc_part_2):
     """Test get_formatted_passive_description formats based on phase."""
-    eq_wengine = EquippedWEngine(steel_cushion_obj, level=60, modification=5, phase=phase)
+    eq_wengine = WEngine(steel_cushion_obj, level=60, modification=5, phase=phase)
     formatted = eq_wengine.get_formatted_passive_description()
     assert isinstance(formatted, str)
     assert expected_desc_part_1 in formatted

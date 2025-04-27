@@ -5,7 +5,7 @@ import os
 import sys
 from unittest.mock import patch, MagicMock
 
-from flashfreeze.core.drive_disc_data import EquippedDriveDisc, SubStatInstance
+from flashfreeze.core.drive_disc_data import DriveDisc, SubStatInstance
 from flashfreeze.core.drive_disc_set_data import DriveDiscSetData # Needed for EquippedDriveDisc
 from flashfreeze.core.common import Stat, Rarity
 
@@ -85,7 +85,7 @@ def test_substatinstance_get_value(rarity, stat_type, rolls, expected_value):
 def test_equipped_disc_post_init_valid(dummy_set_data):
     """Test successful creation with valid parameters."""
     try:
-        EquippedDriveDisc(
+        DriveDisc(
             set_data=dummy_set_data, rarity=Rarity.S, level=15, slot=4,
             main_stat_type=Stat.ATK_PERCENT,
             sub_stats=[
@@ -108,7 +108,7 @@ def test_equipped_disc_post_init_valid(dummy_set_data):
 def test_equipped_disc_post_init_invalid_slot_main_stat(dummy_set_data, slot, main_stat, error_msg_part):
     """Test validation failures for slot and main stat combination."""
     with pytest.raises(ValueError) as excinfo:
-        EquippedDriveDisc(
+        DriveDisc(
             set_data=dummy_set_data, rarity=Rarity.S, level=15, slot=slot,
             main_stat_type=main_stat, sub_stats=[]
         )
@@ -117,7 +117,7 @@ def test_equipped_disc_post_init_invalid_slot_main_stat(dummy_set_data, slot, ma
 def test_equipped_disc_post_init_invalid_substat_count(dummy_set_data):
     """Test validation failure for too many substats."""
     with pytest.raises(ValueError) as excinfo:
-        EquippedDriveDisc(
+        DriveDisc(
             set_data=dummy_set_data, rarity=Rarity.S, level=15, slot=4,
             main_stat_type=Stat.ATK_PERCENT,
             sub_stats=[ SubStatInstance(Stat.HP, 0) ] * 5 # 5 substats
@@ -127,7 +127,7 @@ def test_equipped_disc_post_init_invalid_substat_count(dummy_set_data):
 def test_equipped_disc_post_init_invalid_substat_type(dummy_set_data):
     """Test validation failure for invalid substat type."""
     with pytest.raises(ValueError) as excinfo:
-        EquippedDriveDisc(
+        DriveDisc(
             set_data=dummy_set_data, rarity=Rarity.S, level=15, slot=4,
             main_stat_type=Stat.ATK_PERCENT,
             sub_stats=[ SubStatInstance(Stat.IMPACT, 0) ] # Impact not in POSSIBLE_SUBSTATS
@@ -137,7 +137,7 @@ def test_equipped_disc_post_init_invalid_substat_type(dummy_set_data):
 def test_equipped_disc_post_init_duplicate_substat(dummy_set_data):
     """Test validation failure for duplicate substat types."""
     with pytest.raises(ValueError) as excinfo:
-        EquippedDriveDisc(
+        DriveDisc(
             set_data=dummy_set_data, rarity=Rarity.S, level=15, slot=4,
             main_stat_type=Stat.ATK_PERCENT,
             sub_stats=[ SubStatInstance(Stat.HP, 0), SubStatInstance(Stat.HP, 1) ] # Duplicate HP
@@ -147,7 +147,7 @@ def test_equipped_disc_post_init_duplicate_substat(dummy_set_data):
 def test_equipped_disc_post_init_substat_equals_mainstat(dummy_set_data):
     """Test validation failure when a substat matches the main stat."""
     with pytest.raises(ValueError) as excinfo:
-        EquippedDriveDisc(
+        DriveDisc(
             set_data=dummy_set_data, rarity=Rarity.S, level=15, slot=4,
             main_stat_type=Stat.ATK_PERCENT,
             sub_stats=[ SubStatInstance(Stat.ATK_PERCENT, 0) ] # Substat matches main
@@ -157,14 +157,14 @@ def test_equipped_disc_post_init_substat_equals_mainstat(dummy_set_data):
 def test_equipped_disc_post_init_invalid_substat_rolls(dummy_set_data):
     """Test validation failure for invalid number of substat rolls."""
     with pytest.raises(ValueError) as excinfo:
-        EquippedDriveDisc(
+        DriveDisc(
             set_data=dummy_set_data, rarity=Rarity.S, level=15, slot=4,
             main_stat_type=Stat.ATK_PERCENT,
             sub_stats=[ SubStatInstance(Stat.HP, 6) ] # 6 rolls is invalid (max 5)
         )
     assert "Invalid number of rolls (6)" in str(excinfo.value)
     with pytest.raises(ValueError) as excinfo:
-        EquippedDriveDisc(
+        DriveDisc(
             set_data=dummy_set_data, rarity=Rarity.S, level=15, slot=4,
             main_stat_type=Stat.ATK_PERCENT,
             sub_stats=[ SubStatInstance(Stat.HP, -1) ] # Negative rolls invalid
@@ -174,7 +174,7 @@ def test_equipped_disc_post_init_invalid_substat_rolls(dummy_set_data):
 def test_equipped_disc_post_init_invalid_substat_rolls(dummy_set_data):
     """Test validation failure for invalid number of substat rolls."""
     with pytest.raises(ValueError) as excinfo:
-        EquippedDriveDisc(
+        DriveDisc(
             set_data=dummy_set_data, rarity=Rarity.S, level=15, slot=4,
             main_stat_type=Stat.ATK_PERCENT,
             sub_stats=[ SubStatInstance(Stat.HP, 3), SubStatInstance(Stat.ATK, 3) ] # Negative rolls invalid
@@ -184,16 +184,16 @@ def test_equipped_disc_post_init_invalid_substat_rolls(dummy_set_data):
 def test_equipped_disc_post_init_level_clamping(dummy_set_data):
     """Test that level is clamped based on rarity during init."""
     # S rank, level 20 -> clamped to 15
-    disc_s = EquippedDriveDisc(dummy_set_data, Rarity.S, 20, 1, Stat.HP, [])
+    disc_s = DriveDisc(dummy_set_data, Rarity.S, 20, 1, Stat.HP, [])
     assert disc_s.level == 15
     # A rank, level 15 -> clamped to 12
-    disc_a = EquippedDriveDisc(dummy_set_data, Rarity.A, 15, 1, Stat.HP, [])
+    disc_a = DriveDisc(dummy_set_data, Rarity.A, 15, 1, Stat.HP, [])
     assert disc_a.level == 12
     # B rank, level 10 -> clamped to 9
-    disc_b = EquippedDriveDisc(dummy_set_data, Rarity.B, 10, 1, Stat.HP, [])
+    disc_b = DriveDisc(dummy_set_data, Rarity.B, 10, 1, Stat.HP, [])
     assert disc_b.level == 9
     # Negative level -> clamped to 0
-    disc_neg = EquippedDriveDisc(dummy_set_data, Rarity.S, -5, 1, Stat.HP, [])
+    disc_neg = DriveDisc(dummy_set_data, Rarity.S, -5, 1, Stat.HP, [])
     assert disc_neg.level == 0
 
 
@@ -202,21 +202,21 @@ def test_equipped_disc_post_init_level_clamping(dummy_set_data):
 def test_equipped_disc_get_main_stat_value(dummy_set_data):
     """Test get_main_stat_value using mocked gdl function."""
     # Test existing value
-    disc1 = EquippedDriveDisc(dummy_set_data, Rarity.S, 15, 4, Stat.ATK_PERCENT, [])
+    disc1 = DriveDisc(dummy_set_data, Rarity.S, 15, 4, Stat.ATK_PERCENT, [])
     assert disc1.get_main_stat_value() == pytest.approx(0.30)
-    disc2 = EquippedDriveDisc(dummy_set_data, Rarity.S, 10, 4, Stat.ATK_PERCENT, [])
+    disc2 = DriveDisc(dummy_set_data, Rarity.S, 10, 4, Stat.ATK_PERCENT, [])
     assert disc2.get_main_stat_value() == pytest.approx(0.20)
 
     # Test missing level - fallback to max level
     # Mock setup: get(S, CRIT_RATE, 5) returns None, get(S, CRIT_RATE, 15) returns 0.24
-    disc3 = EquippedDriveDisc(dummy_set_data, Rarity.S, 5, 4, Stat.CRIT_RATE, [])
+    disc3 = DriveDisc(dummy_set_data, Rarity.S, 5, 4, Stat.CRIT_RATE, [])
     assert disc3.get_main_stat_value() == pytest.approx(0.24) # Falls back to level 15 value
 
 
 @pytest.mark.usefixtures("mock_gdl") # Apply the mock for this test
 def test_equipped_disc_get_all_substat_values(dummy_set_data):
     """Test get_all_substat_values aggregates correctly using mocked base values."""
-    disc = EquippedDriveDisc(
+    disc = DriveDisc(
         set_data=dummy_set_data, rarity=Rarity.S, level=15, slot=4,
         main_stat_type=Stat.CRIT_DMG,
         sub_stats=[
@@ -236,6 +236,6 @@ def test_equipped_disc_get_all_substat_values(dummy_set_data):
         assert actual_values[stat] == pytest.approx(expected)
 
     # Test with no substats
-    disc_no_subs = EquippedDriveDisc(dummy_set_data, Rarity.S, 15, 1, Stat.HP, [])
+    disc_no_subs = DriveDisc(dummy_set_data, Rarity.S, 15, 1, Stat.HP, [])
     assert disc_no_subs.get_all_substat_values() == {}
 

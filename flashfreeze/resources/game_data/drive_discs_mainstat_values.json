@@ -165,7 +165,7 @@
             "15": 30
         }
     },
-    "Anomaly Mastery": {
+    "Anomaly Mastery%": {
         "B": {
             "9": 10
         },
@@ -176,7 +176,7 @@
             "15": 30
         }
     },
-    "Energy Regen": {
+    "Energy Regen%": {
         "B": {
             "9": 20
         },
@@ -187,7 +187,7 @@
             "15": 60
         }
     },
-    "Impact": {
+    "Impact%": {
         "B": {
             "9": 6
         },

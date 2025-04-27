@@ -158,7 +158,7 @@ class WEngineData:
         )
     
 @dataclass
-class EquippedWEngine:
+class WEngine:
     """Represents a specific W-Engine instance to be equipped by an agent."""
     # Static data for the W-Engine type
     wengine_data: WEngineData
@@ -183,11 +183,7 @@ class EquippedWEngine:
 
     def get_current_base_atk(self) -> int:
         """Gets the W-Engine's base ATK for its current level."""
-        # Needs a gdl function to fetch W-Engine base ATK by level
-        # Example: base_atk = gdl.get_wengine_base_atk(self.wengine_data.name, self.level)
-        # Placeholder - using the value stored directly in WEngineData for now
-        # This assumes WEngineData.base_atk holds the value for the *max* level (e.g., 90)
-        # A real implementation needs level-based lookup.
+        # TODO: Implement level scaling logic based on W-Engine data
         print(f"Placeholder: Fetching W-Engine base ATK for level {self.level}. Using stored max value for now.")
         return self.wengine_data.base_atk # Replace with actual level lookup
 

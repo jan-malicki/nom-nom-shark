@@ -3,8 +3,6 @@ import os
 from functools import lru_cache
 from typing import Dict, Any, Optional, List, Set
 
-from flashfreeze.core.agent_data import AgentData
-from flashfreeze.core.skill_data import AgentSkillData
 from flashfreeze.core.common import Stat, Rarity
 
 # Define the directory where your static JSON data is stored
@@ -18,16 +16,6 @@ DRIVE_DISCS_SETS_FILE = 'drive_discs.json'
 DRIVE_DISCS_MAIN_STATS_FILE = 'drive_discs_mainstat_values.json'
 DRIVE_DISCS_SUB_STATS_FILE = 'drive_discs_substat_values.json'
 ENEMIES_FILE = 'enemies.json'
-
-PERCENTAGE_STATS: Set[Stat] = {
-    Stat.HP_PERCENT, Stat.ATK_PERCENT, Stat.DEF_PERCENT, Stat.PEN_RATIO,
-    Stat.CRIT_RATE, Stat.CRIT_DMG, Stat.ENERGY_REGEN,
-    Stat.PHYSICAL_DMG, Stat.FIRE_DMG, Stat.ICE_DMG, Stat.ELECTRIC_DMG, Stat.ETHER_DMG,
-}
-
-DAMAGE_BONUS_STATS: Set[Stat] = {
-    Stat.PHYSICAL_DMG, Stat.FIRE_DMG, Stat.ICE_DMG, Stat.ELECTRIC_DMG, Stat.ETHER_DMG,
-}
 
 SKILLS_DIR = 'skills'
 ELLEN_SKILLS_FILE = os.path.join(SKILLS_DIR, 'ellen.json')
@@ -87,25 +75,12 @@ def get_all_w_engine_names() -> List[str]:
     all_engines = _load_json_data(W_ENGINES_FILE)
     return list(all_engines.keys())
 
-def get_agent_data(agent_name: str) -> Optional[Dict[str, Any]]:
-    """
-    Retrieves data for a specific Agent by its name.
-
-    Args:
-        agent_name: The name (key) of the Agent.
-
-    Returns:
-        A dictionary containing the Agent's data, or None if not found.
-    """
-    all_agents = _load_json_data(AGENTS_FILE)
-    return all_agents.get(agent_name)
-
 def get_all_agent_names() -> List[str]:
     """Returns a list of all Agent names."""
     all_agents = _load_json_data(AGENTS_FILE)
     return list(all_agents.keys())
 
-def get_agent_data(agent_name: str) -> Optional[AgentData]:
+def get_agent_data(agent_name: str) -> Optional[Dict[str, Any]]:
     """
     Retrieves Agent's data by its name.
 
@@ -116,10 +91,9 @@ def get_agent_data(agent_name: str) -> Optional[AgentData]:
         An AgentData object containing the Agent's data, or empty if not found.
     """
     agent_dict = _load_json_data(AGENTS_FILE)
-    agent_data = AgentData.from_dict(agent_name, agent_dict.get(agent_name, {}))
-    return agent_data
+    return agent_dict.get(agent_name)
 
-def get_agent_skill_data(agent_filename: str) -> Optional[AgentSkillData]:
+def get_agent_skill_data(agent_filename: str) -> Optional[Dict[str, Any]]:
     """
     Retrieves data for an Agent's skillset by its name.
 
@@ -130,8 +104,7 @@ def get_agent_skill_data(agent_filename: str) -> Optional[AgentSkillData]:
         An AgentSkillData object containing the Agent's skill data, or empty if not found.
     """
     skills_dict = _load_json_data(agent_filename)
-    agent_skill_data = AgentSkillData.from_dict(skills_dict)
-    return agent_skill_data
+    return skills_dict
 
 def get_drive_disc_set_data(set_name: str) -> Optional[Dict[str, Any]]:
     """
@@ -164,7 +137,7 @@ def get_drive_main_stat_value(rarity: Rarity, stat_type: Stat, level: int) -> Op
     all_main_stats = _load_json_data(DRIVE_DISCS_MAIN_STATS_FILE)
 
     # Use Enum values for keys (e.g., "HP%", "S")
-    if stat_type in DAMAGE_BONUS_STATS:
+    if stat_type in Stat.get_damage_bonus_stats():
         stat_key = "DMG"
     else:
         stat_key = stat_type.value
@@ -182,12 +155,7 @@ def get_drive_main_stat_value(rarity: Rarity, stat_type: Stat, level: int) -> Op
         return None
 
     try:
-        value = float(raw_value)
-        # Divide by 100 if it's a percentage stat
-        if stat_type in PERCENTAGE_STATS:
-            return value / 100.0
-        else:
-            return value
+        return float(raw_value)
     except (ValueError, TypeError):
         print(f"Warning: Could not convert main stat value '{raw_value}' to float for {stat_key}/{rarity_key}/{level_key}")
         return None
@@ -219,12 +187,7 @@ def get_drive_substat_base_value(rarity: Rarity, stat_type: Stat) -> Optional[fl
         return None
 
     try:
-        value = float(raw_value)
-        # Divide by 100 if it's a percentage stat
-        if stat_type in PERCENTAGE_STATS:
-            return value / 100.0
-        else:
-            return value
+        return float(raw_value)
     except (ValueError, TypeError):
         print(f"Warning: Could not convert substat value '{raw_value}' to float for {stat_key}/{rarity_key}")
         return None

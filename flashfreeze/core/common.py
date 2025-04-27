@@ -32,20 +32,31 @@ class Stat(StringEnum):
     ATK_PERCENT = "ATK%"
     DEF_PERCENT = "DEF%"
     IMPACT = "Impact"
+    IMPACT_PERCENT = "Impact%"
     CRIT_RATE = "CRIT Rate"
     CRIT_DMG = "CRIT DMG"
     ANOMALY_MASTERY = "Anomaly Mastery"
+    ANOMALY_MASTERY_PERCENT = "Anomaly Mastery%"
     ANOMALY_PROFICIENCY = "Anomaly Proficiency"
     PEN_RATIO = "PEN Ratio"
     PEN = "PEN"
     ENERGY_REGEN = "Energy Regen"
+    ENERGY_REGEN_PERCENT = "Energy Regen%"
     ENERGY_GENERATION_RATE = "Energy Generation Rate"
+    ENERGY_LIMIT = "Energy Limit"
     PHYSICAL_DMG = "Physical DMG"
     FIRE_DMG = "Fire DMG"
     ICE_DMG = "Ice DMG"
     ELECTRIC_DMG = "Electric DMG"
     ETHER_DMG = "Ether DMG"
     UNKNOWN = "Unknown"
+
+    def get_damage_bonus_stats() -> set:
+        """Returns a set of damage bonus stats."""
+        return {
+            Stat.PHYSICAL_DMG, Stat.FIRE_DMG, Stat.ICE_DMG,
+            Stat.ELECTRIC_DMG, Stat.ETHER_DMG
+        }
 
 class Faction(StringEnum):
     CUNNING_HARES = "Cunning Hares"
@@ -67,6 +78,15 @@ class SkillType(StringEnum):
     ASSIST = "Assist"
     CHAIN_ATTACK = "Chain Attack"
     UNKNOWN = "Unknown"
+
+class CoreSkillType(StringEnum):
+    _0 = "0"
+    A = "A"
+    B = "B"
+    C = "C"
+    D = "D"
+    E = "E"
+    F = "F"
 
 class AttackType(StringEnum):
     STRIKE = "Strike"
