@@ -77,9 +77,10 @@ class SkillType(StringEnum):
     SPECIAL_ATTACK = "Special Attack"
     ASSIST = "Assist"
     CHAIN_ATTACK = "Chain Attack"
+    CORE_SKILL = "Core Skill"
     UNKNOWN = "Unknown"
 
-class CoreSkillType(StringEnum):
+class CoreSkillLevel(StringEnum):
     _0 = "0"
     A = "A"
     B = "B"

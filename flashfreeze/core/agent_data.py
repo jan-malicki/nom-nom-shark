@@ -1,5 +1,6 @@
 # core/agent_data.py
 
+import copy
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Any
 
@@ -8,7 +9,7 @@ from flashfreeze.core.drive_disc_set_data import DriveDiscSetData
 from flashfreeze.core.skill_data import AgentSkillData
 from flashfreeze.core.w_engine_data import WEngine
 
-from .common import Attribute, Faction, Rarity, Stat, AttackType, Specialty
+from .common import Attribute, Faction, Rarity, Stat, AttackType, Specialty, SkillType, CoreSkillLevel
 
 
 @dataclass
@@ -71,6 +72,34 @@ class AgentBaseStats:
         except (ValueError, TypeError) as e:
             print(f"Warning: Could not parse base stats data: {data}. Error: {e}")
             return cls() # Return default on error
+        
+    def add_to_base_stat(self, stat: Stat, value: float):
+        """Adds a value to the corresponding base stat."""
+        match stat:
+            case Stat.HP:
+                self.hp += int(value)
+            case Stat.ATK:
+                self.atk += int(value)
+            case Stat.DEF:
+                self.defense += int(value)
+            case Stat.IMPACT:
+                self.impact += int(value)
+            case Stat.ANOMALY_MASTERY:
+                self.anomaly_mastery += int(value)
+            case Stat.ANOMALY_PROFICIENCY:
+                self.anomaly_proficiency += int(value)
+            case Stat.PEN_RATIO:
+                self.pen_ratio += value
+            case Stat.ENERGY_REGEN:
+                self.energy_regen += value
+            case Stat.ENERGY_LIMIT:
+                self.energy_limit += int(value)
+            case Stat.CRIT_RATE:
+                self.crit_rate += value
+            case Stat.CRIT_DMG:
+                self.crit_dmg += value
+            case _:
+                print(f"Warning: Unsupported stat type {stat}")
 
 @dataclass
 class AgentCoreStat:
@@ -232,13 +261,13 @@ class AgentTotalStats:
     def from_base_and_bonus(cls, base_stats: AgentBaseStats, bonus_stats: AgentBonusStats) -> 'AgentTotalStats':
         """Calculates total stats by combining base and bonus stats."""
         return cls(
-            hp=base_stats.hp * (1 + bonus_stats.hp_percent/100) + bonus_stats.hp,
-            atk=base_stats.atk * (1 + bonus_stats.atk_percent/100) + bonus_stats.atk,
-            defense=base_stats.defense * (1 + bonus_stats.def_percent/100) + bonus_stats.defense,
-            impact=base_stats.impact * (1 + bonus_stats.impact_percent/100) + bonus_stats.impact,
+            hp=int(base_stats.hp * (1 + bonus_stats.hp_percent/100) + bonus_stats.hp),
+            atk=int(base_stats.atk * (1 + bonus_stats.atk_percent/100) + bonus_stats.atk),
+            defense=int(base_stats.defense * (1 + bonus_stats.def_percent/100) + bonus_stats.defense),
+            impact=int(base_stats.impact * (1 + bonus_stats.impact_percent/100) + bonus_stats.impact),
             crit_rate=base_stats.crit_rate + bonus_stats.crit_rate,
             crit_dmg=base_stats.crit_dmg + bonus_stats.crit_dmg,
-            anomaly_mastery=base_stats.anomaly_mastery * (1 + bonus_stats.anomaly_mastery_percent/100) + bonus_stats.anomaly_mastery,
+            anomaly_mastery=int(base_stats.anomaly_mastery * (1 + bonus_stats.anomaly_mastery_percent/100) + bonus_stats.anomaly_mastery),
             anomaly_proficiency=base_stats.anomaly_proficiency + bonus_stats.anomaly_proficiency,
             pen_ratio=base_stats.pen_ratio + bonus_stats.pen_ratio,
             pen=bonus_stats.pen,  # Only from bonuses
@@ -254,7 +283,7 @@ class AgentTotalStats:
 @dataclass
 class AgentSkillLevels:
     """Represents the skill levels for an agent."""
-    skill_levels: Dict[str, int] = field(default_factory=dict)
+    skill_levels: Dict[SkillType, int] = field(default_factory=dict)
 
     def get_skill_level(self, skill_name: str) -> int:
         """Returns the level of a specific skill."""
@@ -275,17 +304,22 @@ class Agent:
     w_engine: Optional[WEngine] = None
     drive_discs: Dict[int, DriveDisc] = field(default_factory=dict) # slot -> disc
 
-    # Skill Levels (Placeholder - needs definition based on game mechanics)
-    # Maps skill name (or ID) to its level (e.g., 1-10?)
-    skill_levels: Dict[str, int] = field(default_factory=dict)
+    skill_levels: Dict[SkillType, int] = field(default_factory=dict)
 
     # --- Caching ---
-    _cached_total_stats: Optional[AgentTotalStats] = field(default=None, init=False, repr=False)
+    _cached_total_stats: Optional[AgentTotalStats] = field(default=None, init=False, repr=False, compare=False, hash=False)
 
     def __post_init__(self):
         self.level = max(1, min(self.level, 60))
         self.promotion = max(0, min(self.promotion, 5))
         self.mindscape = max(0, min(self.mindscape, 6))
+
+        # Validate skill levels
+        for skill_type, level in self.skill_levels.items():
+            if skill_type == SkillType.CORE_SKILL:
+                self.skill_levels[skill_type] = max(0, min(level, 6))
+            else:
+                self.skill_levels[skill_type] = max(0, min(level, 12))
 
         # Validate level based on promotion
         min_level = self.promotion * 10
@@ -300,6 +334,8 @@ class Agent:
     def get_active_set_counts(self) -> Dict[DriveDiscSetData, int]:
         """Counts how many pieces of each set are equipped."""
         set_counts: Dict[DriveDiscSetData, int] = {}
+        if not self.drive_discs:
+            return {}
         for disc in self.drive_discs.values():
             set_data = disc.set_data
             set_counts[set_data] = set_counts.get(set_data, 0) + 1
@@ -318,45 +354,62 @@ class Agent:
                 bonus_stats.add_stat(adv_s_type, adv_s_value)
 
         # --- Step 2: Drive Discs Main & Substats ---
-        for slot, disc in self.drive_discs.items():
-            # Main Stat
-            main_s_type = disc.main_stat_type
-            main_s_value = disc.get_main_stat_value() # Uses level/rarity
-            bonus_stats.add_stat(main_s_type, main_s_value)
+        if self.drive_discs:
+            for slot, disc in self.drive_discs.items():
+                # Main Stat
+                main_s_type = disc.main_stat_type
+                main_s_value = disc.get_main_stat_value() # Uses level/rarity
+                bonus_stats.add_stat(main_s_type, main_s_value)
 
-            # Substats
-            substats = disc.get_all_substat_values() # Uses rarity/rolls
-            for sub_s_type, sub_s_value in substats.items():
-                 bonus_stats.add_stat(sub_s_type, sub_s_value)
+                # Substats
+                substats = disc.get_all_substat_values() # Uses rarity/rolls
+                for sub_s_type, sub_s_value in substats.items():
+                    bonus_stats.add_stat(sub_s_type, sub_s_value)
 
         # --- Step 3: Drive Disc 2-Piece Set Bonuses ---
-        set_counts = self.get_active_set_counts()
-        for set_data, count in set_counts.items():
-            if count >= 2:
-                if set_data and set_data.bonus_2pc and set_data.bonus_2pc.simple_stat:
-                    bonus_stat = set_data.bonus_2pc.simple_stat
-                    bonus_value = set_data.bonus_2pc.value
-                    if bonus_stat and bonus_value is not None:
-                         bonus_stats.add_stat(bonus_stat, bonus_value)
+            set_counts = self.get_active_set_counts()
+            for set_data, count in set_counts.items():
+                if count >= 2:
+                    if set_data and set_data.bonus_2pc and set_data.bonus_2pc.simple_stat:
+                        bonus_stat = set_data.bonus_2pc.simple_stat
+                        bonus_value = set_data.bonus_2pc.value
+                        if bonus_stat and bonus_value is not None:
+                            bonus_stats.add_stat(bonus_stat, bonus_value)
 
         return bonus_stats
 
     def recalculate_total_stats(self):
         """Recalculates the total stats by combining base and bonus stats."""
         bonus_stats = self.get_bonus_stats()
-        self._cached_total_stats = AgentTotalStats.from_base_and_bonus(
-            self.base_agent_data.base_stats, bonus_stats
+        base_stats_with_core = copy.deepcopy(self.base_agent_data.base_stats)
+        # Add core stats to base stats
+        core_skill_level = self.skill_levels.get(SkillType.CORE_SKILL, 0)
+        if core_skill_level > 0 and self.base_agent_data.core_stat:
+            core_s_type = self.base_agent_data.core_stat.stat
+            core_s_value = self.base_agent_data.core_stat.value
+            for level in range(1, core_skill_level + 1):
+                if level % 2 == 1:  # Odd levels - apply core stat
+                     if core_s_type and core_s_value is not None:
+                        base_stats_with_core.add_to_base_stat(core_s_type, core_s_value)
+                else:  # Even levels - apply base ATK
+                     base_stats_with_core.add_to_base_stat(Stat.ATK, 25)
+        new_total_stats = AgentTotalStats.from_base_and_bonus(
+            base_stats_with_core, bonus_stats
         )
+        # Use object.__setattr__ to avoid recursion with custom __setattr__
+        object.__setattr__(self, '_cached_total_stats', new_total_stats)
 
     @property
     def total_stats(self) -> AgentTotalStats:
         """Returns the total stats of the agent, recalculating if necessary."""
         if self._cached_total_stats is None:
             self.recalculate_total_stats()
+            if self._cached_total_stats is None:
+                 raise RuntimeError("Recalculation failed to populate cache.")
         return self._cached_total_stats
 
     def __setattr__(self, name, value):
         """Override setattr to recalculate total stats when properties change."""
-        super().__setattr__(name, value)
-        if name in {"level", "promotion", "mindscape", "w_engine", "drive_discs", "skill_levels"}:
-            self.recalculate_total_stats()
+        object.__setattr__(self, name, value)
+        if hasattr(self, '_cached_total_stats') and name in {"level", "promotion", "mindscape", "w_engine", "drive_discs", "skill_levels"}:
+            object.__setattr__(self, '_cached_total_stats', None)
