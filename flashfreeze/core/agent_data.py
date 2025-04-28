@@ -9,7 +9,7 @@ from flashfreeze.core.drive_disc_set_data import DriveDiscSetData
 from flashfreeze.core.skill_data import AgentSkillData
 from flashfreeze.core.w_engine_data import WEngine
 
-from .common import Attribute, Faction, Rarity, Stat, AttackType, Specialty, SkillType, CoreSkillLevel
+from .common import Attribute, Faction, Rarity, Stat, AttackType, Specialty, SkillType
 
 
 @dataclass

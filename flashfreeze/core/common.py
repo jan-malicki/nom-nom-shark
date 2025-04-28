@@ -80,15 +80,6 @@ class SkillType(StringEnum):
     CORE_SKILL = "Core Skill"
     UNKNOWN = "Unknown"
 
-class CoreSkillLevel(StringEnum):
-    _0 = "0"
-    A = "A"
-    B = "B"
-    C = "C"
-    D = "D"
-    E = "E"
-    F = "F"
-
 class AttackType(StringEnum):
     STRIKE = "Strike"
     SLASH = "Slash"
